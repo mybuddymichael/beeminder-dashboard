@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { scale } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
-	import { userToken } from './stores';
-	import type { AuthToken } from './auth';
+	import { login, type AuthToken } from './auth';
 	import BeeIcon from './bee-icon.svelte';
 
 	let inputValue = '';
+	// TODO: Add feedback for a non-token submission.
 	let badToken;
 
 	function checkForEnter(e: KeyboardEvent) {
@@ -33,7 +33,7 @@
 	function handleSubmit() {
 		let token;
 		if ((token = getTokenObject(inputValue))) {
-			userToken.set(token);
+			login(token);
 		}
 	}
 </script>
