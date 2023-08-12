@@ -15,6 +15,7 @@
 	<style>
 		:root {
 			--color-gray-1: #f5f5f5;
+			--color-gray-2: #cccccc;
 			--color-gray-3: #acacac;
 			--color-gray-4: #959595;
 
@@ -26,9 +27,14 @@
 			--color-input-placeholder: var(--color-gray-3);
 
 			--color-help-text: var(--color-gray-4);
+			--color-fine-print-text: var(--color-gray-2);
 
 			--font-weight-link: 700;
 			--font-weight-title: 850;
+		}
+
+		button {
+			cursor: pointer;
 		}
 	</style>
 
