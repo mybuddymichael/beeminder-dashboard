@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { loggedIn } from '$lib/stores';
-	import { logout } from '$lib/auth';
 
 	import Login from '$lib/login.svelte';
+	import Dashboard from '$lib/dashboard.svelte';
 
 	let loading = true;
 
@@ -18,7 +18,7 @@
 {#if loading}
 	<div class="loading" />
 {:else if $loggedIn}
-	<button on:mousedown={logout}>Boom</button>
+	<Dashboard />
 {:else}
 	<Login />
 {/if}

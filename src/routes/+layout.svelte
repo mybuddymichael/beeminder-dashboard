@@ -31,6 +31,9 @@
 
 			--font-weight-link: 700;
 			--font-weight-title: 850;
+
+			font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+				Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 		}
 
 		button {

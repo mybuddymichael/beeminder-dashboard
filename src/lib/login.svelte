@@ -40,7 +40,9 @@
 
 <div class="main">
 	<div class="login">
-		<BeeIcon />
+		<div class="bee">
+			<BeeIcon />
+		</div>
 		<h1>Beeminder Dashboard</h1>
 		<div class="input-container">
 			<input
@@ -64,7 +66,11 @@
 	</div>
 	<div class="fine-print">
 		<p>This project is not associated with beeminder.com.</p>
-		<p>All your data is stored locally on this device. (<a href="#">Source code</a>.)</p>
+		<p>
+			All your data is stored locally on this device. (<a
+				href="https://github.com/mybuddymichael/beeminder">Source code</a
+			>.)
+		</p>
 	</div>
 </div>
 
@@ -72,8 +78,6 @@
 	.main {
 		height: 100vh;
 		margin-top: -6rem;
-		font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-			Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -88,6 +92,9 @@
 		align-items: center;
 		justify-content: center;
 		gap: 2.7rem;
+	}
+	.bee {
+		width: 4.25rem;
 	}
 	h1 {
 		margin: 0;
