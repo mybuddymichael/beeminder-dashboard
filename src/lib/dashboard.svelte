@@ -130,6 +130,8 @@
 	}
 	.refreshTimer {
 		font-size: 0.875rem;
+		font-weight: 500;
+		line-height: normal;
 		color: #b8b8b8;
 	}
 	.clock {

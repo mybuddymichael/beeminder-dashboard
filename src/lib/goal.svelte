@@ -72,6 +72,14 @@
 		justify-content: space-between;
 		align-items: center;
 	}
+	.name {
+		font-size: 0.875rem;
+		font-weight: 700;
+	}
+	.name a {
+		color: inherit;
+		text-decoration: none;
+	}
 	.status {
 		padding: 0.125rem 0.3125rem;
 		font-size: 0.6875rem;
@@ -88,6 +96,7 @@
 		color: #000;
 		background: linear-gradient(137deg, #ffdc81 0%, #ff862e 100%);
 	}
+
 	.status.two {
 		/* color: #fff;
 		background: linear-gradient(137deg, #06f 0%, #0030aa 100%); */
@@ -101,18 +110,13 @@
 	.dot {
 		opacity: 0.5;
 	}
-	.name {
-		font-size: 0.875rem;
-		font-weight: 700;
-	}
-	.name a {
-		color: inherit;
-		text-decoration: none;
-	}
 	.description {
-		color: #a4a4a4;
+		color: #848484;
+		font-family: Inter;
 		font-size: 0.6875rem;
-		font-weight: 425;
+		font-style: normal;
+		font-weight: 450;
+		line-height: normal;
 	}
 	.noDescription {
 		color: #cccccc;
