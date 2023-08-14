@@ -2,9 +2,11 @@
 	import { onMount } from 'svelte';
 	import { signOut } from './auth';
 	import BeeIcon from './bee-icon.svelte';
+	import GoalCard from './goal.svelte';
 
 	type Goal = {
 		baremin: string;
+		id: string;
 		losedate: number;
 		pledge: number;
 		safebuf: number;
@@ -14,11 +16,12 @@
 
 	let goals: Goal[] = [];
 
-	onMount(async function () {
+	const fetchGoals = async function () {
+		let apiGoals: Goal[] = [];
 		try {
 			goals = JSON.parse(localStorage.getItem('goals') || '');
 		} catch {}
-		goals = await fetch(
+		apiGoals = await fetch(
 			`https://www.beeminder.com/api/v1/users/me/goals.json?auth_token=${localStorage.getItem(
 				'key'
 			)}`
@@ -30,13 +33,32 @@
 				return response.json();
 			})
 			.then((data) => {
-				localStorage.setItem('goals', JSON.stringify(data));
 				return data;
 			})
 			.catch((error) => {
 				// TODO: Add error notice.
-				console.log(error);
 			});
+		goals = apiGoals.map(({ baremin, id, losedate, pledge, safebuf, slug, title }) => {
+			return {
+				baremin,
+				id,
+				losedate,
+				pledge,
+				safebuf,
+				slug,
+				title
+			};
+		});
+		localStorage.setItem('goals', JSON.stringify(goals));
+		console.log(goals);
+	};
+
+	onMount(function () {
+		fetchGoals();
+		const interval = setInterval(() => {
+			fetchGoals();
+		}, 1000 * 60 * 10);
+		return () => clearInterval(interval);
 	});
 </script>
 
@@ -46,12 +68,11 @@
 			<div class="bee">
 				<BeeIcon />
 			</div>
-			<!-- <div class="title">Beeminder Dashboard</div> -->
 		</div>
 		<button on:mousedown={signOut}>Sign Out</button>
 	</div>
 	<div class="cards">
-		{goals?.length}
+		{#each goals as goal (goal.id)}<GoalCard {...goal} />{/each}
 	</div>
 </div>
 
@@ -80,15 +101,53 @@
 		width: 1.8125rem;
 		height: 1.75rem;
 	}
-	/* .title {
-		font-weight: 700;
-		font-size: 0.875rem;
-	} */
 	button {
 		background: none;
 		border: none;
 		font-size: 0.875rem;
 		font-weight: 600;
 		color: #8f8f8f;
+	}
+	.cards {
+		--columns: 1;
+		display: grid;
+		grid-template-columns: repeat(var(--columns), 1fr);
+		padding: 1.25rem;
+		gap: 1.25rem;
+	}
+	@media screen and (min-width: 620px) {
+		.cards {
+			--columns: 2;
+		}
+	}
+	@media screen and (min-width: 900px) {
+		.cards {
+			--columns: 3;
+		}
+	}
+	@media screen and (min-width: 1200px) {
+		.cards {
+			--columns: 4;
+		}
+	}
+	@media screen and (min-width: 1500px) {
+		.cards {
+			--columns: 5;
+		}
+	}
+	@media screen and (min-width: 1800px) {
+		.cards {
+			--columns: 6;
+		}
+	}
+	@media screen and (min-width: 2100px) {
+		.cards {
+			--columns: 7;
+		}
+	}
+	@media screen and (min-width: 2400px) {
+		.cards {
+			--columns: 8;
+		}
 	}
 </style>
