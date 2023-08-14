@@ -53,13 +53,29 @@
 		console.log(goals);
 	};
 
+	let timeToRefresh: number;
 	onMount(function () {
 		fetchGoals();
+		const refreshInterval = 1000 * 60 * 10; // 10 minutes.
+		timeToRefresh = refreshInterval;
+		// 10 minuets		let refreshTime =
 		const interval = setInterval(() => {
-			fetchGoals();
-		}, 1000 * 60 * 10);
+			timeToRefresh -= 1000;
+			if (timeToRefresh <= 0) {
+				fetchGoals();
+				timeToRefresh = refreshInterval;
+			}
+		}, 1000);
 		return () => clearInterval(interval);
 	});
+
+	$: minutesToRefresh = Math.floor(timeToRefresh / 1000 / 60);
+	$: secondsToRefresh = `${(timeToRefresh / 1000) % 60}`;
+	$: if (secondsToRefresh === '0') {
+		secondsToRefresh = '00';
+	} else if (parseInt(secondsToRefresh) < 10) {
+		secondsToRefresh = `0${secondsToRefresh}`;
+	}
 </script>
 
 <div class="main">
@@ -69,7 +85,12 @@
 				<BeeIcon />
 			</div>
 		</div>
-		<button on:mousedown={signOut}>Sign Out</button>
+		<div class="rightActions">
+			<div class="refreshTimer">
+				Refreshing in <span class="clock">{minutesToRefresh}:{secondsToRefresh}</span>
+			</div>
+			<button on:mousedown={signOut}>Sign Out</button>
+		</div>
 	</div>
 	<div class="cards">
 		{#each goals as goal (goal.id)}<GoalCard {...goal} />{/each}
@@ -100,6 +121,20 @@
 	.bee {
 		width: 1.8125rem;
 		height: 1.75rem;
+	}
+	.rightActions {
+		display: flex;
+		flex-direction: row;
+		align-items: baseline;
+		gap: 1rem;
+	}
+	.refreshTimer {
+		font-size: 0.875rem;
+		color: #b8b8b8;
+	}
+	.clock {
+		display: inline-block;
+		width: 2rem;
 	}
 	button {
 		background: none;
