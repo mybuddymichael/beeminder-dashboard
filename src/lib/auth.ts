@@ -1,4 +1,4 @@
-import { signedIn } from './stores';
+import { signedIn, username } from './stores';
 
 export type AuthToken = {
 	username: string;
@@ -8,10 +8,12 @@ export type AuthToken = {
 export function signIn(token: AuthToken) {
 	localStorage.setItem('username', token.username);
 	localStorage.setItem('key', token.auth_token);
+	username.set(token.username);
 	signedIn.set(true);
 }
 
 export function signOut() {
 	localStorage.clear();
+	username.set('');
 	signedIn.set(false);
 }

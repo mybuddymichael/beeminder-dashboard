@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { differenceInHours } from 'date-fns';
+	import { username } from './stores';
 
 	export let slug: string;
 	export let title: string;
@@ -44,7 +45,7 @@
 
 <div class="container">
 	<div class="name-status">
-		<div class="name">{slug}</div>
+		<div class="name"><a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a></div>
 		<div class="status {chipClass}">
 			{statusText}
 			{#if pledgeText}
@@ -103,6 +104,10 @@
 	.name {
 		font-size: 0.875rem;
 		font-weight: 700;
+	}
+	.name a {
+		color: inherit;
+		text-decoration: none;
 	}
 	.description {
 		color: #a4a4a4;

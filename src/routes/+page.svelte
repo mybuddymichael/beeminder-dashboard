@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { signedIn } from '$lib/stores';
+	import { signedIn, username } from '$lib/stores';
 
 	import Login from '$lib/signin.svelte';
 	import Dashboard from '$lib/dashboard.svelte';
@@ -8,8 +8,10 @@
 	let loading = true;
 
 	onMount(() => {
-		if (localStorage.getItem('username') && localStorage.getItem('key')) {
+		const u = localStorage.getItem('username');
+		if (u && localStorage.getItem('key')) {
 			signedIn.set(true);
+			username.set(u); // If they navigate here while already signed in.
 		}
 		loading = false;
 	});
