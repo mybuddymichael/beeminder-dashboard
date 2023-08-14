@@ -2,6 +2,7 @@
 	import { scale } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import { login, type AuthToken } from './auth';
+
 	import BeeIcon from './bee-icon.svelte';
 
 	let inputValue = '';
@@ -52,7 +53,9 @@
 				on:keydown={checkForEnter}
 			/>
 			{#if inputValue}
-				<button on:click={handleSubmit} in:scale={{ duration: 100, easing: cubicOut }}>-></button>
+				<button on:mousedown={handleSubmit} in:scale={{ duration: 100, easing: cubicOut }}
+					>-></button
+				>
 			{/if}
 		</div>
 		<div class="help">
