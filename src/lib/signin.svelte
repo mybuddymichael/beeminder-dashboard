@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { scale } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
-	import { login, type AuthToken } from './auth';
+	import { signIn, type AuthToken } from './auth';
 
 	import BeeIcon from './bee-icon.svelte';
 
@@ -34,7 +34,7 @@
 	function handleSubmit() {
 		let token;
 		if ((token = getTokenObject(inputValue))) {
-			login(token);
+			signIn(token);
 		}
 	}
 </script>

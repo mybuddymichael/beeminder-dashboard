@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { logout } from './auth';
+	import { signOut } from './auth';
 	import BeeIcon from './bee-icon.svelte';
 
 	type Goal = {
@@ -48,7 +48,7 @@
 			</div>
 			<!-- <div class="title">Beeminder Dashboard</div> -->
 		</div>
-		<button on:mousedown={logout}>Sign Out</button>
+		<button on:mousedown={signOut}>Sign Out</button>
 	</div>
 	<div class="cards">
 		{goals?.length}
@@ -80,10 +80,10 @@
 		width: 1.8125rem;
 		height: 1.75rem;
 	}
-	.title {
+	/* .title {
 		font-weight: 700;
 		font-size: 0.875rem;
-	}
+	} */
 	button {
 		background: none;
 		border: none;

@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { loggedIn } from '$lib/stores';
+	import { signedIn } from '$lib/stores';
 
-	import Login from '$lib/login.svelte';
+	import Login from '$lib/signin.svelte';
 	import Dashboard from '$lib/dashboard.svelte';
 
 	let loading = true;
 
 	onMount(() => {
 		if (localStorage.getItem('username') && localStorage.getItem('key')) {
-			loggedIn.set(true);
+			signedIn.set(true);
 		}
 		loading = false;
 	});
@@ -17,7 +17,7 @@
 
 {#if loading}
 	<div class="loading" />
-{:else if $loggedIn}
+{:else if $signedIn}
 	<Dashboard />
 {:else}
 	<Login />
