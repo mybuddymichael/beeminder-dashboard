@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { differenceInHours } from 'date-fns';
+	import { differenceInHours, isToday } from 'date-fns';
 	import { username } from './stores';
+	import CheckmarkIcon from './checkmark-icon.svelte';
 
 	export let slug: string;
 	export let title: string;
@@ -8,10 +9,12 @@
 	export let pledge: number;
 	export let baremin: string;
 	export let losedate: number;
+	export let lastday: number;
 
 	let noDescription = false;
 	let statusText: string;
 	let chipClass: string;
+	$: isDoneToday = isToday(new Date(lastday * 1000));
 	$: pledgeText = `$${pledge}`;
 
 	$: if (!title || title.length === 0) {
@@ -42,9 +45,14 @@
 	}
 </script>
 
-<div class="container">
+<div class="container" class:done={isDoneToday}>
 	<div class="name-status">
-		<div class="name"><a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a></div>
+		<div class="name">
+			<a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a>
+			{#if isDoneToday}
+				<div class="checkmark"><CheckmarkIcon /></div>
+			{/if}
+		</div>
 		<div class="status {chipClass}">
 			{statusText}
 			{#if safebuf === 0}
@@ -65,6 +73,9 @@
 		border: 1px solid #f2f2f2;
 		padding: 1rem;
 	}
+	.container.done {
+		opacity: 45%;
+	}
 	.name-status {
 		display: flex;
 		flex-direction: row;
@@ -72,12 +83,19 @@
 		align-items: center;
 	}
 	.name {
+		display: flex;
+		flex-direction: row;
+		gap: 0.5rem;
 		font-size: 0.875rem;
 		font-weight: 700;
 	}
 	.name a {
 		color: inherit;
 		text-decoration: none;
+	}
+	.checkmark {
+		height: 0.75rem;
+		width: 0.75rem;
 	}
 	.status {
 		padding: 0.125rem 0.3125rem;

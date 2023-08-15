@@ -28,10 +28,11 @@
 			localStorage.setItem('updatedAt', `${latestUpdatedAt}`);
 			let apiGoals: Goal[] = [];
 			apiGoals = await fetchJson(goalsUrl(key)).then((data) => data);
-			goals = apiGoals.map(({ baremin, id, losedate, pledge, safebuf, slug, title }) => {
+			goals = apiGoals.map(({ baremin, id, lastday, losedate, pledge, safebuf, slug, title }) => {
 				return {
 					baremin,
 					id,
+					lastday,
 					losedate,
 					pledge,
 					safebuf,

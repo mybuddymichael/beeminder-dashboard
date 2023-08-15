@@ -1,6 +1,7 @@
 export type Goal = {
 	baremin: string;
 	id: string;
+	lastday: number;
 	losedate: number;
 	pledge: number;
 	safebuf: number;
