@@ -31,12 +31,11 @@
 
 	$: if (safebuf === 0) {
 		chipClass = 'zero';
-		pledgeText = `$${pledge}`;
 	} else if (safebuf === 1) {
 		chipClass = 'one';
 	} else if (safebuf === 2) {
 		chipClass = 'two';
-	} else if (safebuf >= 3) {
+	} else if (safebuf >= 3 && safebuf < 7) {
 		chipClass = 'three';
 	} else if (safebuf >= 7) {
 		chipClass = 'blue';
@@ -96,16 +95,17 @@
 		color: #000;
 		background: linear-gradient(137deg, #ffdc81 0%, #ff862e 100%);
 	}
-
 	.status.two {
-		/* color: #fff;
-		background: linear-gradient(137deg, #06f 0%, #0030aa 100%); */
 		color: #000;
 		background: linear-gradient(137deg, #ffdc81 0%, #ff862e 100%);
 	}
 	.status.three {
 		color: #000;
 		background: linear-gradient(137deg, #cfffbe 0%, #a0dc8a 100%);
+	}
+	.status.blue {
+		color: #000;
+		background: linear-gradient(137deg, hsl(216 100% 50% / 30%) 0%, hsla(223 100% 33% / 30%) 100%);
 	}
 	.dot {
 		opacity: 0.5;
