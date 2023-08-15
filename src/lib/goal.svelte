@@ -11,8 +11,8 @@
 
 	let noDescription = false;
 	let statusText: string;
-	let pledgeText: string;
 	let chipClass: string;
+	$: pledgeText = `$${pledge}`;
 
 	$: if (!title || title.length === 0) {
 		title = 'No description given.';
@@ -48,7 +48,7 @@
 		<div class="name"><a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a></div>
 		<div class="status {chipClass}">
 			{statusText}
-			{#if pledgeText}
+			{#if safebuf === 0}
 				<span class="dot"> • </span>{pledgeText}
 			{/if}
 		</div>
