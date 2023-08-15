@@ -3,62 +3,54 @@
 	import { signOut } from './auth';
 	import BeeIcon from './bee-icon.svelte';
 	import GoalCard from './goal.svelte';
-
-	type Goal = {
-		baremin: string;
-		id: string;
-		losedate: number;
-		pledge: number;
-		safebuf: number;
-		slug: string;
-		title: string;
-	};
+	import { goalsUrl, userUrl, type Goal } from '$lib/api';
 
 	let goals: Goal[] = [];
 
-	const fetchGoals = async function () {
-		let apiGoals: Goal[] = [];
+	async function fetchJson(url: string) {
+		const response = await fetch(url);
 		try {
-			goals = JSON.parse(localStorage.getItem('goals') || '');
-		} catch {}
-		apiGoals = await fetch(
-			`https://www.beeminder.com/api/v1/users/me/goals.json?auth_token=${localStorage.getItem(
-				'key'
-			)}`
-		)
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error();
-				}
-				return response.json();
-			})
-			.then((data) => {
-				return data;
-			})
-			.catch((error) => {
-				// TODO: Add error notice.
+			if (!response.ok) {
+				throw new Error();
+			}
+			return await response.json();
+		} catch {
+			// TODO: Add error state/notice
+		}
+	}
+
+	const fetchGoals = async function () {
+		const key = localStorage.getItem('key') as string;
+		// Only fetch goals if there's been an update.
+		const previousUpdatedAt: number = parseInt(localStorage.getItem('updatedAt') ?? '0');
+		const latestUpdatedAt: number = await fetchJson(userUrl(key)).then((data) => data.updated_at);
+		if (latestUpdatedAt > previousUpdatedAt) {
+			localStorage.setItem('updatedAt', `${latestUpdatedAt}`);
+			let apiGoals: Goal[] = [];
+			apiGoals = await fetchJson(goalsUrl(key)).then((data) => data);
+			goals = apiGoals.map(({ baremin, id, losedate, pledge, safebuf, slug, title }) => {
+				return {
+					baremin,
+					id,
+					losedate,
+					pledge,
+					safebuf,
+					slug,
+					title
+				};
 			});
-		goals = apiGoals.map(({ baremin, id, losedate, pledge, safebuf, slug, title }) => {
-			return {
-				baremin,
-				id,
-				losedate,
-				pledge,
-				safebuf,
-				slug,
-				title
-			};
-		});
-		localStorage.setItem('goals', JSON.stringify(goals));
-		console.log(goals);
+			localStorage.setItem('goals', JSON.stringify(goals));
+		}
 	};
 
 	let timeToRefresh: number;
 	onMount(function () {
+		try {
+			goals = JSON.parse(localStorage.getItem('goals') || '');
+		} catch {}
 		fetchGoals();
-		const refreshInterval = 1000 * 60 * 10; // 10 minutes.
+		const refreshInterval = 1000 * 60; // One minute.
 		timeToRefresh = refreshInterval;
-		// 10 minuets		let refreshTime =
 		const interval = setInterval(() => {
 			timeToRefresh -= 1000;
 			if (timeToRefresh <= 0) {
