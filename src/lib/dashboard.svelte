@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { flip } from 'svelte/animate';
+
 	import { signOut } from './auth';
 	import { fetchJson, fetchGoals, type Goal } from '$lib/api';
 	import { latestVersion } from '$lib/versions';
 	import BeeIcon from './bee-icon.svelte';
 	import GoalCard from './goal.svelte';
-	import { flip } from 'svelte/animate';
 
 	const versionObj = latestVersion();
 	const VERSION = versionObj.version;
@@ -14,6 +15,11 @@
 
 	let goals: Goal[] = [];
 
+	const updateGoals = async () => {
+		const updatedGoals = await fetchGoals(VERSION);
+		updatedGoals && (goals = updatedGoals);
+	};
+
 	let timeToBeeminderRefresh: number;
 	onMount(function () {
 		// Load goals from localStorage if they exist.
@@ -21,19 +27,14 @@
 			goals = JSON.parse(localStorage.getItem('goals') || '');
 		} catch {}
 		// Update goals (if necessary).
-		(async () => {
-			const updatedGoals = await fetchGoals(VERSION);
-			updatedGoals && (goals = updatedGoals);
-		})();
+		updateGoals();
 		// Check for new Beeminder data every minute.
 		const beeminderRefreshIntervalInMs = 1000 * 60; // One minute in ms.
 		timeToBeeminderRefresh = beeminderRefreshIntervalInMs;
 		const beeminderCheckInterval = setInterval(async () => {
 			timeToBeeminderRefresh -= 1000;
 			if (timeToBeeminderRefresh <= 0) {
-				timeToBeeminderRefresh = 0; // Pause the timer while we wait for the fetch.
-				const updatedGoals = await fetchGoals(VERSION);
-				updatedGoals && (goals = updatedGoals);
+				updateGoals();
 				timeToBeeminderRefresh = beeminderRefreshIntervalInMs;
 			}
 		}, 1000);
