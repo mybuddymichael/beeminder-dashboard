@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: '3',
+		date: '2023-08-16',
+		description: 'Made the checkmark icon more visible in dark mode.'
+	},
+	{
 		version: '2',
 		date: '2023-08-15',
 		description: 'Started tracking version details.'
