@@ -59,7 +59,8 @@
 			goals = JSON.parse(localStorage.getItem('goals') || '');
 		} catch {}
 		fetchGoals();
-		const refreshInterval = 1000 * 60; // One minute.
+		// Check for new Beeminder data every minute.
+		const refreshInterval = 1000 * 60; // One minute in ms.
 		timeToRefresh = refreshInterval;
 		const interval = setInterval(() => {
 			timeToRefresh -= 1000;
@@ -68,12 +69,13 @@
 				timeToRefresh = refreshInterval;
 			}
 		}, 1000);
+		// Check for a new dashboard version.
 		const checkServerVersionInterval = setInterval(async () => {
 			const serverVersion = await fetchJson('/version');
 			if (serverVersion !== VERSION) {
 				location.reload();
 			}
-		}, 5000);
+		}, 30 * 1000); // 30 seconds.
 		return () => {
 			clearInterval(interval);
 			clearInterval(checkServerVersionInterval);
