@@ -5,6 +5,7 @@
 	import { latestVersion } from '$lib/versions';
 	import BeeIcon from './bee-icon.svelte';
 	import GoalCard from './goal.svelte';
+	import { flip } from 'svelte/animate';
 
 	const versionObj = latestVersion();
 	const VERSION = versionObj.version;
@@ -30,6 +31,7 @@
 		const beeminderCheckInterval = setInterval(async () => {
 			timeToBeeminderRefresh -= 1000;
 			if (timeToBeeminderRefresh <= 0) {
+				timeToBeeminderRefresh = 0; // Pause the timer while we wait for the fetch.
 				const updatedGoals = await fetchGoals(VERSION);
 				updatedGoals && (goals = updatedGoals);
 				timeToBeeminderRefresh = beeminderRefreshIntervalInMs;
@@ -73,7 +75,11 @@
 			</div>
 		</div>
 		<div class="cards">
-			{#each goals as goal (goal.id)}<GoalCard {...goal} />{/each}
+			{#each goals as goal (goal.id)}
+				<div animate:flip={{ duration: 300 }}>
+					<GoalCard {...goal} />
+				</div>
+			{/each}
 		</div>
 	</main>
 	<footer class="version" title="v{VERSION} ({DATE}): {DESCRIPTION}">
