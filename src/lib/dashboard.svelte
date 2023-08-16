@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { signOut } from './auth';
-	import { goalsUrl, userUrl, type Goal } from '$lib/api';
+	import { fetchJson, fetchGoals, type Goal } from '$lib/api';
 	import { latestVersion } from '$lib/versions';
 	import BeeIcon from './bee-icon.svelte';
 	import GoalCard from './goal.svelte';
@@ -13,77 +13,43 @@
 
 	let goals: Goal[] = [];
 
-	// A generic reusable function for fetching JSON.
-	async function fetchJson(url: string) {
-		const response = await fetch(url);
-		try {
-			if (!response.ok) {
-				throw new Error();
-			}
-			return await response.json();
-		} catch {
-			// TODO: Add error state/notice
-		}
-	}
-
-	async function fetchGoals() {
-		const key = localStorage.getItem('key') as string;
-		// Only fetch goals if there's been an update or the client version is updated.
-		const previousUpdatedAt: number = parseInt(localStorage.getItem('updatedAt') ?? '0');
-		const latestUpdatedAt: number = await fetchJson(userUrl(key)).then((data) => data.updated_at);
-		const previousVersion: number = parseInt(localStorage.getItem('version') ?? '0');
-		if (latestUpdatedAt > previousUpdatedAt || VERSION !== previousVersion) {
-			localStorage.setItem('updatedAt', `${latestUpdatedAt}`);
-			let apiGoals: Goal[] = [];
-			apiGoals = await fetchJson(goalsUrl(key)).then((data) => data);
-			goals = apiGoals.map(({ baremin, id, lastday, losedate, pledge, safebuf, slug, title }) => {
-				return {
-					baremin,
-					id,
-					lastday,
-					losedate,
-					pledge,
-					safebuf,
-					slug,
-					title
-				};
-			});
-			localStorage.setItem('goals', JSON.stringify(goals));
-			localStorage.setItem('version', `${VERSION}`);
-		}
-	}
-
-	let timeToRefresh: number;
+	let timeToBeeminderRefresh: number;
 	onMount(function () {
+		// Load goals from localStorage if they exist.
 		try {
 			goals = JSON.parse(localStorage.getItem('goals') || '');
 		} catch {}
-		fetchGoals();
+		// Update goals (if necessary).
+		(async () => {
+			const updatedGoals = await fetchGoals(VERSION);
+			updatedGoals && (goals = updatedGoals);
+		})();
 		// Check for new Beeminder data every minute.
-		const refreshInterval = 1000 * 60; // One minute in ms.
-		timeToRefresh = refreshInterval;
-		const interval = setInterval(() => {
-			timeToRefresh -= 1000;
-			if (timeToRefresh <= 0) {
-				fetchGoals();
-				timeToRefresh = refreshInterval;
+		const beeminderRefreshIntervalInMs = 1000 * 60; // One minute in ms.
+		timeToBeeminderRefresh = beeminderRefreshIntervalInMs;
+		const beeminderCheckInterval = setInterval(async () => {
+			timeToBeeminderRefresh -= 1000;
+			if (timeToBeeminderRefresh <= 0) {
+				const updatedGoals = await fetchGoals(VERSION);
+				updatedGoals && (goals = updatedGoals);
+				timeToBeeminderRefresh = beeminderRefreshIntervalInMs;
 			}
 		}, 1000);
-		// Check for a new dashboard version.
+		// Check for a new dashboard version every so often.
 		const checkServerVersionInterval = setInterval(async () => {
-			const serverVersion = await fetchJson('/version');
-			if (serverVersion !== VERSION) {
+			if ((await fetchJson('/version')) !== VERSION) {
 				location.reload();
 			}
 		}, 30 * 1000); // 30 seconds.
+		// Clear intervals on component unmount.
 		return () => {
-			clearInterval(interval);
+			clearInterval(beeminderCheckInterval);
 			clearInterval(checkServerVersionInterval);
 		};
 	});
 
-	$: minutesToRefresh = Math.floor(timeToRefresh / 1000 / 60);
-	$: secondsToRefresh = `${(timeToRefresh / 1000) % 60}`;
+	$: minutesToRefresh = Math.floor(timeToBeeminderRefresh / 1000 / 60);
+	$: secondsToRefresh = `${(timeToBeeminderRefresh / 1000) % 60}`;
 	$: if (secondsToRefresh === '0') {
 		secondsToRefresh = '00';
 	} else if (parseInt(secondsToRefresh) < 10) {
