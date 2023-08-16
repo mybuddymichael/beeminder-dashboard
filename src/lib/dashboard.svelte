@@ -2,10 +2,14 @@
 	import { onMount } from 'svelte';
 	import { signOut } from './auth';
 	import { goalsUrl, userUrl, type Goal } from '$lib/api';
+	import { latestVersion } from '$lib/versions';
 	import BeeIcon from './bee-icon.svelte';
 	import GoalCard from './goal.svelte';
 
-	const version = 1;
+	const versionObj = latestVersion();
+	const VERSION = parseInt(versionObj.version);
+	const DATE = versionObj.date;
+	const DESCRIPTION = versionObj.description;
 
 	let goals: Goal[] = [];
 
@@ -27,7 +31,7 @@
 		const previousUpdatedAt: number = parseInt(localStorage.getItem('updatedAt') ?? '0');
 		const latestUpdatedAt: number = await fetchJson(userUrl(key)).then((data) => data.updated_at);
 		const previousVersion: number = parseInt(localStorage.getItem('version') ?? '0');
-		if (latestUpdatedAt > previousUpdatedAt || version !== previousVersion) {
+		if (latestUpdatedAt > previousUpdatedAt || VERSION !== previousVersion) {
 			localStorage.setItem('updatedAt', `${latestUpdatedAt}`);
 			let apiGoals: Goal[] = [];
 			apiGoals = await fetchJson(goalsUrl(key)).then((data) => data);
@@ -44,7 +48,7 @@
 				};
 			});
 			localStorage.setItem('goals', JSON.stringify(goals));
-			localStorage.setItem('version', `${version}`);
+			localStorage.setItem('version', `${VERSION}`);
 		}
 	}
 
@@ -94,7 +98,9 @@
 			{#each goals as goal (goal.id)}<GoalCard {...goal} />{/each}
 		</div>
 	</main>
-	<footer class="version">v{version}</footer>
+	<footer class="version" title="v{VERSION} ({DATE}): {DESCRIPTION}">
+		<span>v{VERSION}</span>
+	</footer>
 </div>
 
 <style>
@@ -115,6 +121,9 @@
 		justify-content: end;
 		font-size: 0.75rem;
 		color: #b8b8b8;
+	}
+	.version span {
+		cursor: help;
 	}
 	.titlebar {
 		display: flex;
