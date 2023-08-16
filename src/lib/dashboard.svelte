@@ -7,12 +7,13 @@
 	import GoalCard from './goal.svelte';
 
 	const versionObj = latestVersion();
-	const VERSION = parseInt(versionObj.version);
+	const VERSION = versionObj.version;
 	const DATE = versionObj.date;
 	const DESCRIPTION = versionObj.description;
 
 	let goals: Goal[] = [];
 
+	// A generic reusable function for fetching JSON.
 	async function fetchJson(url: string) {
 		const response = await fetch(url);
 		try {
@@ -67,7 +68,16 @@
 				timeToRefresh = refreshInterval;
 			}
 		}, 1000);
-		return () => clearInterval(interval);
+		const checkServerVersionInterval = setInterval(async () => {
+			const serverVersion = await fetchJson('/version');
+			if (serverVersion !== VERSION) {
+				location.reload();
+			}
+		}, 5000);
+		return () => {
+			clearInterval(interval);
+			clearInterval(checkServerVersionInterval);
+		};
 	});
 
 	$: minutesToRefresh = Math.floor(timeToRefresh / 1000 / 60);
