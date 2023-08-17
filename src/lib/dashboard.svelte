@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { dev } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
 
@@ -20,7 +21,13 @@
 		updatedGoals && (goals = updatedGoals);
 	};
 
+	const versionCheckIntervalInMs = 1000 * 30; // 30s in ms.
+	const beeminderRefreshIntervalInMs = 1000 * 60; // One minute in ms.
 	let timeToBeeminderRefresh: number;
+	const fetchAndReset = () => {
+		fetchGoals(VERSION);
+		timeToBeeminderRefresh = beeminderRefreshIntervalInMs;
+	};
 	onMount(function () {
 		// Load goals from localStorage if they exist.
 		try {
@@ -29,13 +36,11 @@
 		// Update goals (if necessary).
 		updateGoals();
 		// Check for new Beeminder data every minute.
-		const beeminderRefreshIntervalInMs = 1000 * 60; // One minute in ms.
 		timeToBeeminderRefresh = beeminderRefreshIntervalInMs;
 		const beeminderCheckInterval = setInterval(async () => {
 			timeToBeeminderRefresh -= 1000;
 			if (timeToBeeminderRefresh <= 0) {
-				updateGoals();
-				timeToBeeminderRefresh = beeminderRefreshIntervalInMs;
+				fetchAndReset();
 			}
 		}, 1000);
 		// Check for a new dashboard version every so often.
@@ -43,7 +48,7 @@
 			if ((await fetchJson('/version')) !== VERSION) {
 				location.reload();
 			}
-		}, 30 * 1000); // 30 seconds.
+		}, versionCheckIntervalInMs); // 30 seconds.
 		// Clear intervals on component unmount.
 		return () => {
 			clearInterval(beeminderCheckInterval);
@@ -69,6 +74,7 @@
 				</div>
 			</div>
 			<div class="rightActions">
+				{#if dev}<button class="reset" on:mousedown={fetchAndReset}>Check Now</button>{/if}
 				<div class="refreshTimer">
 					Refreshing in <span class="clock">{minutesToRefresh}:{secondsToRefresh}</span>
 				</div>
