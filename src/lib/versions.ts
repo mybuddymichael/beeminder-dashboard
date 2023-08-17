@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 8,
+		date: '2023-08-17',
+		description: 'Added a little transition when cards change to done.'
+	},
+	{
 		version: 7,
 		date: '2023-08-16',
 		description: 'Adjusted the data fetching code to prevent blocking the timer.'

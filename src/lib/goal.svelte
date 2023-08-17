@@ -72,6 +72,7 @@
 		border-radius: 0.375rem;
 		border: 1px solid #f2f2f2;
 		padding: 1rem;
+		transition: opacity 0.5s;
 	}
 	.container.done {
 		opacity: 45%;
