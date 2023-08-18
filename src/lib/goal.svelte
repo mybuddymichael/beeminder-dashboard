@@ -2,6 +2,7 @@
 	import { differenceInHours, isToday } from 'date-fns';
 	import { username } from './stores';
 	import CheckmarkIcon from './checkmark-icon.svelte';
+	import { onMount } from 'svelte';
 
 	export let slug: string;
 	export let title: string;
@@ -14,7 +15,8 @@
 	let noDescription = false;
 	let statusText: string;
 	let chipClass: string;
-	$: isDoneToday = isToday(new Date(lastday * 1000));
+	$: isBeemergency = safebuf === 0;
+	$: hasBeenDoneToday = isToday(new Date(lastday * 1000));
 	$: pledgeText = `$${pledge}`;
 
 	$: if (!title || title.length === 0) {
@@ -24,12 +26,15 @@
 		noDescription = false;
 	}
 
-	$: if (safebuf > 0) {
-		const dayLabel = safebuf === 1 ? 'day' : 'days';
-		statusText = `${safebuf} ${dayLabel}`;
-	} else {
+	const updateBeemergencyStatusText = () => {
 		const hours = differenceInHours(new Date(losedate * 1000), new Date());
 		statusText = `${baremin} due in ${hours}hrs`;
+	};
+	$: if (isBeemergency) {
+		updateBeemergencyStatusText();
+	} else {
+		const dayLabel = safebuf === 1 ? 'day' : 'days';
+		statusText = `${safebuf} ${dayLabel}`;
 	}
 
 	$: if (safebuf === 0) {
@@ -43,13 +48,24 @@
 	} else if (safebuf >= 7) {
 		chipClass = 'blue';
 	}
+
+	onMount(() => {
+		const statusTextRefreshInterval = setInterval(() => {
+			if (isBeemergency) {
+				updateBeemergencyStatusText();
+			}
+		}, 1000 * 3);
+		return () => {
+			clearInterval(statusTextRefreshInterval);
+		};
+	});
 </script>
 
-<div class="container" class:done={isDoneToday}>
+<div class="container" class:done={hasBeenDoneToday}>
 	<div class="name-status">
 		<div class="name">
 			<a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a>
-			{#if isDoneToday}
+			{#if hasBeenDoneToday}
 				<div class="checkmark"><CheckmarkIcon /></div>
 			{/if}
 		</div>
