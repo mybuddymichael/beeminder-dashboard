@@ -25,7 +25,7 @@
 	const beeminderRefreshIntervalInMs = 1000 * 60; // One minute in ms.
 	let timeToBeeminderRefresh: number;
 	const fetchAndReset = () => {
-		fetchGoals(VERSION);
+		updateGoals();
 		timeToBeeminderRefresh = beeminderRefreshIntervalInMs;
 	};
 	onMount(function () {
