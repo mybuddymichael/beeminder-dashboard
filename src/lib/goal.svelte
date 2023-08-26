@@ -12,11 +12,12 @@
 	export let losedate: number;
 	export let lastday: number;
 
+	$: lastdayDate = new Date(lastday * 1000);
 	let noDescription = false;
 	let statusText: string;
 	let chipClass: string;
 	$: isBeemergency = safebuf === 0;
-	$: hasBeenDoneToday = isToday(new Date(lastday * 1000));
+	$: hasBeenDoneToday = isToday(lastdayDate);
 	$: pledgeText = `$${pledge}`;
 
 	$: if (!title || title.length === 0) {
@@ -50,13 +51,14 @@
 	}
 
 	onMount(() => {
-		const statusTextRefreshInterval = setInterval(() => {
+		const updateInterval = setInterval(() => {
 			if (isBeemergency) {
 				updateBeemergencyStatusText();
 			}
+			hasBeenDoneToday = isToday(lastdayDate);
 		}, 1000 * 3);
 		return () => {
-			clearInterval(statusTextRefreshInterval);
+			clearInterval(updateInterval);
 		};
 	});
 </script>
