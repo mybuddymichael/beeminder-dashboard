@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte';
 
 	export let slug: string;
-	export let title: string;
+	export let title: string | null;
 	export let safebuf: number;
 	export let pledge: number;
 	export let baremin: string;
@@ -14,14 +14,15 @@
 	export let rate: number;
 	export let runits: string;
 	export let gunits: string;
-
-	const relativeDateRegex = /last\s[A-Z][a-z]+|(yesterday)|(today)/g;
+	export let fineprint: string | null;
+	const isBook = fineprint && fineprint.match(/#book/);
 
 	$: isBeemergency = safebuf === 0;
 	$: lastdayDate = new Date(lastday * 1000);
 	$: hasBeenDoneToday = isToday(lastdayDate);
 	$: pledgeText = `$${pledge}`;
 
+	const relativeDateRegex = /last\s[A-Z][a-z]+|(yesterday)|(today)/g;
 	$: lastDateString = formatRelative(lastdayDate, new Date());
 	$: matches = lastDateString.match(relativeDateRegex);
 	let relativeDate: string;
@@ -73,6 +74,7 @@
 				updateBeemergencyStatusText();
 			}
 			hasBeenDoneToday = isToday(lastdayDate);
+			updateRelativeDate(matches);
 		}, 1000 * 3);
 		return () => {
 			clearInterval(updateInterval);
@@ -103,6 +105,14 @@
 		<div class="value relativeDate">{relativeDate}</div>
 		<div class="key">Rate</div>
 		<div class="value">{rate % 1 !== 0 ? rate.toFixed(2) : rate} {gunits} / {runits}</div>
+		<div class="key">Fine Print</div>
+		{#if fineprint && !isBook}
+			<div class="value">{fineprint}</div>
+		{:else if isBook}
+			<div class="value noFinePrint">This goal is a book.</div>
+		{:else}
+			<div class="value noFinePrint">No fine print for this goal.</div>
+		{/if}
 	</div>
 </div>
 
@@ -195,11 +205,11 @@
 	.key,
 	.value {
 		border-top: 1px solid #f0f0f0;
+		padding: 0.625rem 1rem;
 	}
 	.key {
 		/* background-color: hsl(0 0% 98% / 100%); */
 		border-right: 1px solid #f2f2f2;
-		padding: 0.625rem 1rem;
 		color: #848484;
 		font-size: 0.625rem;
 		font-style: normal;
@@ -215,9 +225,16 @@
 		font-size: 0.6875rem;
 		font-style: normal;
 		font-weight: 500;
-		line-height: normal;
+	}
+	.key,
+	.value {
+		line-height: 1.4em;
 	}
 	.relativeDate {
 		text-transform: capitalize;
+	}
+	.noFinePrint {
+		color: #cccccc;
+		font-style: italic;
 	}
 </style>

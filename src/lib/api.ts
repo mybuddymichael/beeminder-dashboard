@@ -7,6 +7,7 @@ export type GoalBase = {
 	safebuf: number;
 	slug: string;
 	title: string;
+	fineprint: string;
 	runits: string;
 	gunits: string;
 };
@@ -61,9 +62,10 @@ export async function fetchGoals(version: number) {
 				safebuf: g.safebuf,
 				slug: g.slug,
 				title: g.title,
-				rate: g.mathishard[2],
+				fineprint: g.fineprint,
 				runits: g.runits,
-				gunits: g.gunits
+				gunits: g.gunits,
+				rate: g.mathishard[2]
 			};
 		});
 		localStorage.setItem('goals', JSON.stringify(goals));
