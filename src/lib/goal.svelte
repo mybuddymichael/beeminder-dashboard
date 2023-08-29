@@ -15,8 +15,8 @@
 	export let runits: string;
 	export let gunits: string;
 	export let fineprint: string | null;
-	const isBook = fineprint && fineprint.match(/#book/);
 
+	$: isBook = fineprint && fineprint.match(/#book/);
 	$: isBeemergency = safebuf === 0;
 	$: lastdayDate = new Date(lastday * 1000);
 	$: hasBeenDoneToday = isToday(lastdayDate);
