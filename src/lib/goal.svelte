@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { differenceInHours, isToday } from 'date-fns';
+	import { differenceInHours, formatRelative, isToday } from 'date-fns';
 	import { username } from './stores';
 	import CheckmarkIcon from './checkmark-icon.svelte';
 	import { onMount } from 'svelte';
@@ -11,14 +11,31 @@
 	export let baremin: string;
 	export let losedate: number;
 	export let lastday: number;
+	export let rate: number;
+	export let runits: string;
+	export let gunits: string;
 
+	const relativeDateRegex = /last\s[A-Z][a-z]+|(yesterday)|(today)/g;
+
+	$: isBeemergency = safebuf === 0;
 	$: lastdayDate = new Date(lastday * 1000);
+	$: hasBeenDoneToday = isToday(lastdayDate);
+	$: pledgeText = `$${pledge}`;
+
+	$: lastDateString = formatRelative(lastdayDate, new Date());
+	$: matches = lastDateString.match(relativeDateRegex);
+	let relativeDate: string;
+	const updateRelativeDate = (matches: RegExpMatchArray | null) => {
+		if (matches) {
+			relativeDate = matches[0].split(' ')[1] ?? matches[0];
+		} else {
+			relativeDate = lastDateString;
+		}
+	};
+	$: updateRelativeDate(matches);
 	let noDescription = false;
 	let statusText: string;
 	let chipClass: string;
-	$: isBeemergency = safebuf === 0;
-	$: hasBeenDoneToday = isToday(lastdayDate);
-	$: pledgeText = `$${pledge}`;
 
 	$: if (!title || title.length === 0) {
 		title = 'No description given.';
@@ -64,36 +81,48 @@
 </script>
 
 <div class="container" class:done={hasBeenDoneToday}>
-	<div class="name-status">
-		<div class="name">
-			<a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a>
-			{#if hasBeenDoneToday}
-				<div class="checkmark"><CheckmarkIcon /></div>
-			{/if}
+	<div class="topSection">
+		<div class="name-status">
+			<div class="name">
+				<a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a>
+				{#if hasBeenDoneToday}
+					<div class="checkmark"><CheckmarkIcon /></div>
+				{/if}
+			</div>
+			<div class="status {chipClass}">
+				{statusText}
+				{#if safebuf === 0}
+					<span class="dot"> • </span>{pledgeText}
+				{/if}
+			</div>
 		</div>
-		<div class="status {chipClass}">
-			{statusText}
-			{#if safebuf === 0}
-				<span class="dot"> • </span>{pledgeText}
-			{/if}
-		</div>
+		<div class="description" class:noDescription>{title}</div>
 	</div>
-	<div class="description" class:noDescription>{title}</div>
+	<div class="additionalInfo">
+		<div class="key">Last completed</div>
+		<div class="value relativeDate">{relativeDate}</div>
+		<div class="key">Rate</div>
+		<div class="value">{rate % 1 !== 0 ? rate.toFixed(2) : rate} {gunits} / {runits}</div>
+	</div>
 </div>
 
 <style>
 	.container {
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
 		background-color: #fff;
 		border-radius: 0.375rem;
 		border: 1px solid #f2f2f2;
-		padding: 1rem;
 		transition: opacity 0.5s;
 	}
 	.container.done {
 		opacity: 45%;
+	}
+	.topSection {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding: 1rem;
 	}
 	.name-status {
 		display: flex;
@@ -158,5 +187,37 @@
 	.noDescription {
 		color: #cccccc;
 		font-style: italic;
+	}
+	.additionalInfo {
+		display: grid;
+		grid-template-columns: max-content 1fr;
+	}
+	.key,
+	.value {
+		border-top: 1px solid #f0f0f0;
+	}
+	.key {
+		/* background-color: hsl(0 0% 98% / 100%); */
+		border-right: 1px solid #f2f2f2;
+		padding: 0.625rem 1rem;
+		color: #848484;
+		font-size: 0.625rem;
+		font-style: normal;
+		font-weight: 850;
+		line-height: normal;
+		text-transform: uppercase;
+	}
+	.value {
+		display: flex;
+		align-items: center;
+		padding-left: 0.75rem;
+		color: #848484;
+		font-size: 0.6875rem;
+		font-style: normal;
+		font-weight: 500;
+		line-height: normal;
+	}
+	.relativeDate {
+		text-transform: capitalize;
 	}
 </style>

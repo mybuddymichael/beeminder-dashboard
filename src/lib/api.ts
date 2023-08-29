@@ -1,4 +1,4 @@
-export type Goal = {
+export type GoalBase = {
 	baremin: string;
 	id: string;
 	lastday: number;
@@ -7,6 +7,16 @@ export type Goal = {
 	safebuf: number;
 	slug: string;
 	title: string;
+	runits: string;
+	gunits: string;
+};
+// Properties that only exist on the API object.
+export type GoalApi = GoalBase & {
+	mathishard: number[];
+};
+// Properties that only exist on the working object.
+export type GoalClean = GoalBase & {
+	rate: number;
 };
 
 const apiBaseUrl = 'https://www.beeminder.com/api/v1/users/me';
@@ -31,7 +41,7 @@ export async function fetchJson(url: string) {
 }
 
 export async function fetchGoals(version: number) {
-	let goals: Goal[];
+	let goals: GoalClean[];
 	const key = localStorage.getItem('key') as string;
 	// Only fetch goals if there's been an update or the client version is updated.
 	const previousUpdatedAt: number = parseInt(localStorage.getItem('updatedAt') ?? '0');
@@ -39,18 +49,21 @@ export async function fetchGoals(version: number) {
 	const previousVersion: number = parseInt(localStorage.getItem('version') ?? '0');
 	if (latestUpdatedAt > previousUpdatedAt || version !== previousVersion) {
 		localStorage.setItem('updatedAt', `${latestUpdatedAt}`);
-		let apiGoals: Goal[] = [];
+		let apiGoals: GoalApi[] = [];
 		apiGoals = await fetchJson(goalsUrl(key)).then((data) => data);
-		goals = apiGoals.map(({ baremin, id, lastday, losedate, pledge, safebuf, slug, title }) => {
+		goals = apiGoals.map((g) => {
 			return {
-				baremin,
-				id,
-				lastday,
-				losedate,
-				pledge,
-				safebuf,
-				slug,
-				title
+				baremin: g.baremin,
+				id: g.id,
+				lastday: g.lastday,
+				losedate: g.losedate,
+				pledge: g.pledge,
+				safebuf: g.safebuf,
+				slug: g.slug,
+				title: g.title,
+				rate: g.mathishard[2],
+				runits: g.runits,
+				gunits: g.gunits
 			};
 		});
 		localStorage.setItem('goals', JSON.stringify(goals));

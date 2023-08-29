@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 12,
+		date: '2023-08-29',
+		description: 'Added "last completed" and "rate" sections to each goal card.'
+	},
+	{
 		version: 11,
 		date: '2023-08-25',
 		description: 'Fixed the done status not updating after midnight.'

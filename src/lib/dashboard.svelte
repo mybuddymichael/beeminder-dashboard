@@ -4,7 +4,7 @@
 	import { flip } from 'svelte/animate';
 
 	import { signOut } from './auth';
-	import { fetchJson, fetchGoals, type Goal } from '$lib/api';
+	import { fetchJson, fetchGoals, type GoalClean } from '$lib/api';
 	import { latestVersion } from '$lib/versions';
 	import BeeIcon from './bee-icon.svelte';
 	import GoalCard from './goal.svelte';
@@ -14,7 +14,7 @@
 	const DATE = versionObj.date;
 	const DESCRIPTION = versionObj.description;
 
-	let goals: Goal[] = [];
+	let goals: GoalClean[] = [];
 
 	const updateGoals = async () => {
 		const updatedGoals = await fetchGoals(VERSION);
