@@ -22,18 +22,19 @@
 	$: hasBeenDoneToday = isToday(lastdayDate);
 	$: pledgeText = `$${pledge}`;
 
-	const relativeDateRegex = /last\s[A-Z][a-z]+|(yesterday)|(today)/g;
-	$: lastDateString = formatRelative(lastdayDate, new Date());
-	$: matches = lastDateString.match(relativeDateRegex);
 	let relativeDate: string;
-	const updateRelativeDate = (matches: RegExpMatchArray | null) => {
+	const updateRelativeDate = (date: Date) => {
+		const relativeDateRegex = /last\s[A-Z][a-z]+|(yesterday)|(today)/g;
+		const lastDateString = formatRelative(date, new Date());
+		const matches = lastDateString.match(relativeDateRegex);
 		if (matches) {
 			relativeDate = matches[0].split(' ')[1] ?? matches[0];
 		} else {
-			relativeDate = lastDateString;
+			relativeDate = lastDateString; // It's more than a week ago / it's a calendar date.
 		}
 	};
-	$: updateRelativeDate(matches);
+	$: updateRelativeDate(lastdayDate);
+
 	let noDescription = false;
 	let statusText: string;
 	let chipClass: string;
@@ -74,7 +75,7 @@
 				updateBeemergencyStatusText();
 			}
 			hasBeenDoneToday = isToday(lastdayDate);
-			updateRelativeDate(matches);
+			updateRelativeDate(lastdayDate);
 		}, 1000 * 3);
 		return () => {
 			clearInterval(updateInterval);

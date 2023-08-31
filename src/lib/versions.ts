@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 14,
+		date: '2023-08-31',
+		description: 'Fixed a bug where the "last completed" date wouldn\'t update.'
+	},
+	{
 		version: 13,
 		date: '2023-08-29',
 		description: 'Added the fine print to each goal.'
