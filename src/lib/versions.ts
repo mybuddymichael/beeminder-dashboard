@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 15,
+		date: '2023-09-04',
+		description: 'The page now tries to refresh when regaining focus.'
+	},
+	{
 		version: 14,
 		date: '2023-08-31',
 		description: 'Fixed a bug where the "last completed" date wouldn\'t update.'

@@ -49,10 +49,13 @@
 				location.reload();
 			}
 		}, versionCheckIntervalInMs); // 30 seconds.
-		// Clear intervals on component unmount.
+		// Refresh the data when the tab or window regains focus.
+		window.addEventListener('focus', fetchAndReset);
+		// Clean up on component unmount.
 		return () => {
 			clearInterval(beeminderCheckInterval);
 			clearInterval(checkServerVersionInterval);
+			window.removeEventListener('focus', fetchAndReset);
 		};
 	});
 
