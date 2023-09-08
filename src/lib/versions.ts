@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 17,
+		date: '2023-09-08',
+		description: 'Two days of buffer now displays yellow instead of orange.'
+	},
+	{
 		version: 16,
 		date: '2023-09-08',
 		description: 'The last completed date can now be toggled between distance and relative options.'

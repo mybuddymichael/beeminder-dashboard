@@ -199,7 +199,7 @@
 	}
 	.status.two {
 		color: #000;
-		background: linear-gradient(137deg, #ffdc81 0%, #ff862e 100%);
+		background: linear-gradient(137deg, hsla(60, 100%, 72%, 1), hsla(50, 100%, 70%, 1));
 	}
 	.status.three {
 		color: #000;
