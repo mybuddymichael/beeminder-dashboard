@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 16,
+		date: '2023-09-08',
+		description: 'The last completed date can now be toggled between distance and relative options.'
+	},
+	{
 		version: 15,
 		date: '2023-09-04',
 		description: 'The page now tries to refresh when regaining focus.'
