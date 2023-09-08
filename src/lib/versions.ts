@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 18,
+		date: '2023-09-08',
+		description: 'The "two day yellow" is now slightly darker.'
+	},
+	{
 		version: 17,
 		date: '2023-09-08',
 		description: 'Two days of buffer now displays yellow instead of orange.'
