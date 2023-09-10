@@ -1,15 +1,10 @@
-<script context="module" lang="ts">
-	import { writable } from 'svelte/store';
-
-	type DatePresentationOption = 'relative' | 'distance';
-	const datePresentationOption = writable('distance' as DatePresentationOption);
-</script>
-
 <script lang="ts">
-	import { differenceInHours, formatDistance, formatRelative, isToday } from 'date-fns';
-	import { username } from './stores';
-	import CheckmarkIcon from './checkmark-icon.svelte';
 	import { onMount } from 'svelte';
+	import { differenceInHours, formatDistance, formatRelative, isToday } from 'date-fns';
+
+	import { username, preferences } from '$lib/stores';
+	import { toggleLastCompletedFormat } from '$lib/preferences';
+	import CheckmarkIcon from '$lib/checkmark-icon.svelte';
 
 	export let slug: string;
 	export let title: string | null;
@@ -29,14 +24,9 @@
 	$: hasBeenDoneToday = isToday(lastdayDate);
 	$: pledgeText = `$${pledge}`;
 
-	const toggleDatePresentationOption = () => {
-		const newOption = $datePresentationOption === 'relative' ? 'distance' : 'relative';
-		datePresentationOption.set(newOption);
-	};
 	let lastCompletedDateString: string;
-
-	const updateLastCompletedDate = (date: Date, option: DatePresentationOption) => {
-		if (option === 'relative') {
+	const updateLastCompletedDate = (date: Date) => {
+		if ($preferences.lastCompletedFormat === 'relative') {
 			const relativeDateRegex = /last\s[A-Z][a-z]+|(yesterday)|(today)/g;
 			const lastDateString = formatRelative(date, new Date());
 			const matches = lastDateString.match(relativeDateRegex);
@@ -45,11 +35,11 @@
 			} else {
 				lastCompletedDateString = lastDateString; // It's more than a week ago / it's a calendar date.
 			}
-		} else if (option === 'distance') {
+		} else if ($preferences.lastCompletedFormat === 'distance') {
 			lastCompletedDateString = formatDistance(lastdayDate, new Date()) + ' ago';
 		}
 	};
-	$: updateLastCompletedDate(lastdayDate, $datePresentationOption);
+	$: $preferences && updateLastCompletedDate(lastdayDate);
 
 	let noDescription = false;
 	let statusText: string;
@@ -91,7 +81,7 @@
 				updateBeemergencyStatusText();
 			}
 			hasBeenDoneToday = isToday(lastdayDate);
-			updateLastCompletedDate(lastdayDate, $datePresentationOption);
+			updateLastCompletedDate(lastdayDate);
 		}, 1000 * 3);
 		return () => {
 			clearInterval(updateInterval);
@@ -123,8 +113,8 @@
 			<p
 				role="button"
 				tabindex="0"
-				on:click={toggleDatePresentationOption}
-				on:keypress={toggleDatePresentationOption}
+				on:click={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
+				on:keypress={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
 			>
 				{lastCompletedDateString}
 			</p>
@@ -255,6 +245,7 @@
 	.lastCompletedDate p {
 		border-bottom: 1px solid hsl(0 0% 52% / 15%);
 		cursor: pointer;
+		user-select: none;
 	}
 	.lastCompletedDate p::first-letter {
 		text-transform: capitalize;
