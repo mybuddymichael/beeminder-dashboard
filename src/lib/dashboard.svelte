@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { dev } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
 
@@ -21,13 +20,6 @@
 		updatedGoals && (goals = updatedGoals);
 	};
 
-	const versionCheckIntervalInMs = 1000 * 30; // 30s in ms.
-	const beeminderRefreshIntervalInMs = 1000 * 60; // One minute in ms.
-	let timeToBeeminderRefresh: number;
-	const fetchAndReset = () => {
-		updateGoals();
-		timeToBeeminderRefresh = beeminderRefreshIntervalInMs;
-	};
 	onMount(function () {
 		// Load goals from localStorage if they exist.
 		try {
@@ -35,37 +27,22 @@
 		} catch {}
 		// Update goals (if necessary).
 		updateGoals();
-		// Check for new Beeminder data every minute.
-		timeToBeeminderRefresh = beeminderRefreshIntervalInMs;
-		const beeminderCheckInterval = setInterval(async () => {
-			timeToBeeminderRefresh -= 1000;
-			if (timeToBeeminderRefresh <= 0) {
-				fetchAndReset();
-			}
-		}, 1000);
-		// Check for a new dashboard version every so often.
-		const checkServerVersionInterval = setInterval(async () => {
+		const updateInterval = setInterval(async () => {
+			// Check for new Beeminder data.
+			updateGoals();
+			// Check for a new dashboard version.
 			if ((await fetchJson('/version')) !== VERSION) {
 				location.reload();
 			}
-		}, versionCheckIntervalInMs); // 30 seconds.
+		}, 1000 * 30); // 30 seconds.
 		// Refresh the data when the tab or window regains focus.
-		window.addEventListener('focus', fetchAndReset);
+		window.addEventListener('focus', updateGoals);
 		// Clean up on component unmount.
 		return () => {
-			clearInterval(beeminderCheckInterval);
-			clearInterval(checkServerVersionInterval);
-			window.removeEventListener('focus', fetchAndReset);
+			clearInterval(updateInterval);
+			window.removeEventListener('focus', updateGoals);
 		};
 	});
-
-	$: minutesToRefresh = Math.floor(timeToBeeminderRefresh / 1000 / 60);
-	$: secondsToRefresh = `${(timeToBeeminderRefresh / 1000) % 60}`;
-	$: if (secondsToRefresh === '0') {
-		secondsToRefresh = '00';
-	} else if (parseInt(secondsToRefresh) < 10) {
-		secondsToRefresh = `0${secondsToRefresh}`;
-	}
 </script>
 
 <div class="container">
@@ -77,10 +54,6 @@
 				</div>
 			</div>
 			<div class="rightActions">
-				{#if dev}<button class="reset" on:mousedown={fetchAndReset}>Check Now</button>{/if}
-				<div class="refreshTimer">
-					Refreshing in <span class="clock">{minutesToRefresh}:{secondsToRefresh}</span>
-				</div>
 				<button on:mousedown={signOut}>Sign Out</button>
 			</div>
 		</div>
@@ -143,16 +116,6 @@
 		flex-direction: row;
 		align-items: baseline;
 		gap: 1rem;
-	}
-	.refreshTimer {
-		font-size: 0.875rem;
-		font-weight: 500;
-		line-height: normal;
-		color: #b8b8b8;
-	}
-	.clock {
-		display: inline-block;
-		width: 2rem;
 	}
 	button {
 		background: none;

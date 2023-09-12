@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 19,
+		date: '2023-09-12',
+		description: 'The refresh timer has been removed.'
+	},
+	{
 		version: 18,
 		date: '2023-09-08',
 		description: 'The "two day yellow" is now slightly darker.'
