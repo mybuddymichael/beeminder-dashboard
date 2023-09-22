@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 20,
+		date: '2023-09-30',
+		description: 'Added a preference to move "done today" goals to the bottom.'
+	},
+	{
 		version: 19,
 		date: '2023-09-12',
 		description: 'The refresh timer has been removed.'

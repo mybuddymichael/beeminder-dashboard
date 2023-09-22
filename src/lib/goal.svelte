@@ -110,14 +110,14 @@
 	<div class="additionalInfo">
 		<div class="key">Last completed</div>
 		<div class="value lastCompletedDate">
-			<p
+			<span
 				role="button"
 				tabindex="0"
 				on:click={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
 				on:keypress={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
 			>
 				{lastCompletedDateString}
-			</p>
+			</span>
 		</div>
 		<div class="key">Rate</div>
 		<div class="value">{rate % 1 !== 0 ? rate.toFixed(2) : rate} {gunits} / {runits}</div>
@@ -242,12 +242,12 @@
 		font-style: normal;
 		font-weight: 500;
 	}
-	.lastCompletedDate p {
+	.lastCompletedDate span {
 		border-bottom: 1px solid hsl(0 0% 52% / 15%);
 		cursor: pointer;
 		user-select: none;
 	}
-	.lastCompletedDate p::first-letter {
+	.lastCompletedDate span::first-letter {
 		text-transform: capitalize;
 	}
 	.key,
