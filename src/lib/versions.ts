@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 22,
+		date: '2023-10-02',
+		description: "Fixed a bug with a dangling divider that shouldn't have been there."
+	},
+	{
 		version: 21,
 		date: '2023-10-02',
 		description:

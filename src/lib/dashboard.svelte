@@ -135,7 +135,9 @@
 		</div>
 		{#if 'goals' in goalsGrouped}
 			<CardGrid goals={goalsGrouped.goals} />
-		{:else if 'done' in goalsGrouped}
+		{:else if goalsGrouped.done?.length === 0}
+			<CardGrid goals={goalsGrouped.notDone} />
+		{:else if goalsGrouped.done?.length > 0}
 			<CardGrid goals={goalsGrouped.notDone} />
 			<div class="divider" />
 			<CardGrid goals={goalsGrouped.done} />
