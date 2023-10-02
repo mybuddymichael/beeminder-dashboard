@@ -12,6 +12,12 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 21,
+		date: '2023-10-02',
+		description:
+			"Done goals now only go to the bottom if they have data today AND they're not a beemergency."
+	},
+	{
 		version: 20,
 		date: '2023-09-30',
 		description: 'Added a preference to move "done today" goals to the bottom.'

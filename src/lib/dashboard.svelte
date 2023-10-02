@@ -45,7 +45,7 @@
 		} else if ($preferences.groupBy === GroupByOption.done) {
 			goalsGrouped = goals.reduce(
 				(acc, goal) => {
-					if (isToday(new Date(goal.lastday * 1000))) {
+					if (isToday(new Date(goal.lastday * 1000)) && goal.safebuf > 0) {
 						return { notDone: [...acc.notDone], done: [...acc.done, goal] };
 					}
 					return { notDone: [...acc.notDone, goal], done: [...acc.done] };

@@ -89,14 +89,12 @@
 	});
 </script>
 
-<div class="container" class:done={hasBeenDoneToday}>
+<div class="container" class:done={hasBeenDoneToday && !isBeemergency}>
 	<div class="topSection">
 		<div class="name-status">
 			<div class="name">
 				<a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a>
-				{#if hasBeenDoneToday}
-					<div class="checkmark"><CheckmarkIcon /></div>
-				{/if}
+				<div class="checkmark"><CheckmarkIcon /></div>
 			</div>
 			<div class="status {chipClass}">
 				{statusText}
@@ -168,8 +166,12 @@
 		text-decoration: none;
 	}
 	.checkmark {
+		display: none;
 		height: 0.75rem;
 		width: 0.75rem;
+	}
+	.done .checkmark {
+		display: block;
 	}
 	.status {
 		padding: 0.125rem 0.3125rem;
