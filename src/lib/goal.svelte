@@ -5,6 +5,7 @@
 	import { username, preferences } from '$lib/stores';
 	import { toggleLastCompletedFormat } from '$lib/preferences';
 	import CheckmarkIcon from '$lib/checkmark-icon.svelte';
+	import { colorForBuffer } from './goals';
 
 	export let slug: string;
 	export let title: string | null;
@@ -23,6 +24,15 @@
 	$: lastdayDate = new Date(lastday * 1000);
 	$: hasBeenDoneToday = isToday(lastdayDate);
 	$: pledgeText = `$${pledge}`;
+	$: color = colorForBuffer(safebuf);
+	let statusText: string;
+	let noDescription = false;
+	$: if (!title || title.length === 0) {
+		title = 'No description given.';
+		noDescription = true;
+	} else {
+		noDescription = false;
+	}
 
 	let lastCompletedDateString: string;
 	const updateLastCompletedDate = (date: Date) => {
@@ -41,17 +51,6 @@
 	};
 	$: $preferences && updateLastCompletedDate(lastdayDate);
 
-	let noDescription = false;
-	let statusText: string;
-	let chipClass: string;
-
-	$: if (!title || title.length === 0) {
-		title = 'No description given.';
-		noDescription = true;
-	} else {
-		noDescription = false;
-	}
-
 	const updateBeemergencyStatusText = () => {
 		const hours = differenceInHours(new Date(losedate * 1000), new Date());
 		statusText = `${baremin} due in ${hours}hrs`;
@@ -61,18 +60,6 @@
 	} else {
 		const dayLabel = safebuf === 1 ? 'day' : 'days';
 		statusText = `${safebuf} ${dayLabel}`;
-	}
-
-	$: if (safebuf === 0) {
-		chipClass = 'zero';
-	} else if (safebuf === 1) {
-		chipClass = 'one';
-	} else if (safebuf === 2) {
-		chipClass = 'two';
-	} else if (safebuf >= 3 && safebuf < 7) {
-		chipClass = 'three';
-	} else if (safebuf >= 7) {
-		chipClass = 'blue';
 	}
 
 	onMount(() => {
@@ -96,7 +83,7 @@
 				<a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a>
 				<div class="checkmark"><CheckmarkIcon /></div>
 			</div>
-			<div class="status {chipClass}">
+			<div class="status {color}">
 				{statusText}
 				{#if safebuf === 0}
 					<span class="dot"> • </span>{pledgeText}
@@ -181,19 +168,19 @@
 		border-radius: 0.25rem;
 		background: #eee;
 	}
-	.status.zero {
+	.status.red {
 		color: #fff;
 		background: linear-gradient(145deg, #ff3232 0%, #8e0000 100%);
 	}
-	.status.one {
+	.status.orange {
 		color: #000;
 		background: linear-gradient(137deg, #ffdc81 0%, #ff862e 100%);
 	}
-	.status.two {
+	.status.yellow {
 		color: #000;
 		background: linear-gradient(137deg, hsla(60, 100%, 72%, 1), hsla(50, 100%, 49%, 1));
 	}
-	.status.three {
+	.status.green {
 		color: #000;
 		background: linear-gradient(137deg, #cfffbe 0%, #a0dc8a 100%);
 	}

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { signedIn, username } from '$lib/stores';
 
-	import Login from '$lib/signin.svelte';
+	import SignIn from '$lib/signin.svelte';
 	import Dashboard from '$lib/dashboard.svelte';
 
 	let loading = true;
@@ -22,5 +22,5 @@
 {:else if $signedIn}
 	<Dashboard />
 {:else}
-	<Login />
+	<SignIn />
 {/if}

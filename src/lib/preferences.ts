@@ -1,10 +1,7 @@
 import { preferences } from '$lib/stores';
+import { GroupByOption } from '$lib/goals';
 
 type LastCompletedFormat = 'relative' | 'distance';
-export enum GroupByOption {
-	ungrouped = 'ungrouped',
-	done = 'done'
-}
 
 type Preferences = {
 	showExtraData: {

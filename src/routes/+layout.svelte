@@ -6,6 +6,7 @@
 </script>
 
 <svelte:head>
+	<link rel="icon" href="/favicons/blue.png?v=4ab2a37c" />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
 	<link

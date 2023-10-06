@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { GoalClean } from '$lib/api';
+	import type { GoalClean } from '$lib/goals';
 	import { flip } from 'svelte/animate';
 	import GoalCard from '$lib/goal.svelte';
 

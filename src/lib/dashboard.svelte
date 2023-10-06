@@ -2,19 +2,24 @@
 	import { onMount } from 'svelte';
 
 	import { signOut } from './auth';
-	import { fetchJson, fetchGoals, type GoalClean } from '$lib/api';
-	import { latestVersion } from '$lib/versions';
 	import { preferences } from '$lib/stores';
+	import { fetchJson, fetchGoals } from '$lib/api';
+	import { GroupByOption, groupGoals, mostPressingColor } from '$lib/goals';
+	import { latestVersion } from '$lib/versions';
+	import type { GoalClean, GoalGroup } from '$lib/goals';
+
+	import { setGroupByOption } from './preferences';
+
 	import CardGrid from '$lib/card-grid.svelte';
 	import BeeIcon from '$lib/bee-icon.svelte';
 	import SettingsIcon from '$lib/settings-icon.svelte';
-	import { GroupByOption, setGroupByOption } from './preferences';
-	import { isToday } from 'date-fns';
 
 	const versionObj = latestVersion();
 	const VERSION = versionObj.version;
 	const DATE = versionObj.date;
 	const DESCRIPTION = versionObj.description;
+
+	$: keyColor = mostPressingColor(allGoals);
 
 	let showPrefs = false;
 	$: groupByDone = $preferences.groupBy === GroupByOption.done;
@@ -27,41 +32,18 @@
 		setGroupByOption(GroupByOption.ungrouped);
 	}
 
-	type GoalsUngrouped = {
-		goals: GoalClean[];
-	};
-	type GoalsGroupedByDone = {
-		notDone: GoalClean[];
-		done: GoalClean[];
-	};
 	let allGoals: GoalClean[] = [];
-	let goalsGrouped: GoalsUngrouped | GoalsGroupedByDone;
+	let goalsGrouped: GoalGroup;
 
-	const groupGoals = (goals: GoalClean[]) => {
-		if ($preferences.groupBy === GroupByOption.ungrouped) {
-			goalsGrouped = {
-				goals
-			};
-		} else if ($preferences.groupBy === GroupByOption.done) {
-			goalsGrouped = goals.reduce(
-				(acc, goal) => {
-					if (isToday(new Date(goal.lastday * 1000)) && goal.safebuf > 0) {
-						return { notDone: [...acc.notDone], done: [...acc.done, goal] };
-					}
-					return { notDone: [...acc.notDone, goal], done: [...acc.done] };
-				},
-				{ notDone: [] as GoalClean[], done: [] as GoalClean[] }
-			);
-		}
-	};
-
-	$: $preferences && groupGoals(allGoals);
+	$: if ($preferences) {
+		goalsGrouped = groupGoals(allGoals, $preferences.groupBy);
+	}
 
 	const updateGoals = async () => {
 		const updatedGoals = await fetchGoals(VERSION);
 		if (updatedGoals) {
 			allGoals = updatedGoals;
-			groupGoals(allGoals);
+			groupGoals(allGoals, $preferences.groupBy);
 		}
 	};
 
@@ -78,7 +60,7 @@
 	onMount(function () {
 		try {
 			allGoals = JSON.parse(localStorage.getItem('goals') || '');
-			groupGoals(allGoals);
+			groupGoals(allGoals, $preferences.groupBy);
 		} catch {}
 		updateGoals();
 		const updateInterval = setInterval(async () => {
@@ -98,6 +80,10 @@
 		};
 	});
 </script>
+
+<svelte:head>
+	<link rel="icon" href="/favicons/{keyColor}.png?v=4ab2a37c" />
+</svelte:head>
 
 <div class="container">
 	<main>
