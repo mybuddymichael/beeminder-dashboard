@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 24,
+		date: '2023-10-26',
+		description: 'Added the amount due to each status chip.'
+	},
+	{
 		version: 23,
 		date: '2023-10-10',
 		description: 'Added favicons that reflect the color of the most pressing goal.'

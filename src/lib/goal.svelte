@@ -26,6 +26,12 @@
 	$: pledgeText = `$${pledge}`;
 	$: color = colorForBuffer(safebuf);
 	let statusText: string;
+	$: if (baremin) {
+		const timeframe = safebuf === 0 ? 'h' : 'd';
+		const value =
+			safebuf === 0 ? differenceInHours(new Date(losedate * 1000), new Date()) : safebuf;
+		statusText = `${baremin} in ${value}${timeframe}`;
+	}
 	let noDescription = false;
 	$: if (!title || title.length === 0) {
 		title = 'No description given.';
@@ -51,22 +57,8 @@
 	};
 	$: $preferences && updateLastCompletedDate(lastdayDate);
 
-	const updateBeemergencyStatusText = () => {
-		const hours = differenceInHours(new Date(losedate * 1000), new Date());
-		statusText = `${baremin} due in ${hours}hrs`;
-	};
-	$: if (isBeemergency) {
-		updateBeemergencyStatusText();
-	} else {
-		const dayLabel = safebuf === 1 ? 'day' : 'days';
-		statusText = `${safebuf} ${dayLabel}`;
-	}
-
 	onMount(() => {
 		const updateInterval = setInterval(() => {
-			if (isBeemergency) {
-				updateBeemergencyStatusText();
-			}
 			hasBeenDoneToday = isToday(lastdayDate);
 			updateLastCompletedDate(lastdayDate);
 		}, 1000 * 3);
