@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 25,
+		date: '2023-11-03',
+		description: 'Added preferences to show or hide the extra goal data.'
+	},
+	{
 		version: 24,
 		date: '2023-10-26',
 		description: 'Added the amount due to each status chip.'

@@ -82,29 +82,37 @@
 				{/if}
 			</div>
 		</div>
-		<div class="description" class:noDescription>{title}</div>
+		{#if $preferences.showExtraData.description}
+			<div class="description" class:noDescription>{title}</div>
+		{/if}
 	</div>
 	<div class="additionalInfo">
-		<div class="key">Last completed</div>
-		<div class="value lastCompletedDate">
-			<span
-				role="button"
-				tabindex="0"
-				on:click={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
-				on:keypress={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
-			>
-				{lastCompletedDateString}
-			</span>
-		</div>
-		<div class="key">Rate</div>
-		<div class="value">{rate % 1 !== 0 ? rate.toFixed(2) : rate} {gunits} / {runits}</div>
-		<div class="key">Fine Print</div>
-		{#if fineprint && !isBook}
-			<div class="value">{fineprint}</div>
-		{:else if isBook}
-			<div class="value noFinePrint">This goal is a book.</div>
-		{:else}
-			<div class="value noFinePrint">No fine print for this goal.</div>
+		{#if $preferences.showExtraData.lastCompleted}
+			<div class="key">Last completed</div>
+			<div class="value lastCompletedDate">
+				<span
+					role="button"
+					tabindex="0"
+					on:click={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
+					on:keypress={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
+				>
+					{lastCompletedDateString}
+				</span>
+			</div>
+		{/if}
+		{#if $preferences.showExtraData.rate}
+			<div class="key">Rate</div>
+			<div class="value">{rate % 1 !== 0 ? rate.toFixed(2) : rate} {gunits} / {runits}</div>
+		{/if}
+		{#if $preferences.showExtraData.finePrint}
+			<div class="key">Fine Print</div>
+			{#if fineprint && !isBook}
+				<div class="value">{fineprint}</div>
+			{:else if isBook}
+				<div class="value noFinePrint">This goal is a book.</div>
+			{:else}
+				<div class="value noFinePrint">No fine print for this goal.</div>
+			{/if}
 		{/if}
 	</div>
 </div>

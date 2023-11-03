@@ -3,6 +3,8 @@ import { GroupByOption } from '$lib/goals';
 
 type LastCompletedFormat = 'relative' | 'distance';
 
+type ExtraData = 'description' | 'lastCompleted' | 'rate' | 'finePrint';
+
 type Preferences = {
 	showExtraData: {
 		description: boolean;
@@ -51,5 +53,13 @@ export const toggleLastCompletedFormat = (prevLastCompletedFormat: LastCompleted
 export const setGroupByOption = (option: GroupByOption) => {
 	preferences.update((prev) => {
 		return { ...prev, groupBy: option };
+	});
+};
+
+export const toggleShowExtraData = (category: ExtraData) => {
+	preferences.update((prev) => {
+		const showExtraData = { ...prev.showExtraData, [category]: !prev.showExtraData[category] };
+		console.log(showExtraData);
+		return { ...prev, showExtraData };
 	});
 };

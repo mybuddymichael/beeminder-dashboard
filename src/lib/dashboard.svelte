@@ -8,7 +8,7 @@
 	import { latestVersion } from '$lib/versions';
 	import type { GoalClean, GoalGroup } from '$lib/goals';
 
-	import { setGroupByOption } from './preferences';
+	import { setGroupByOption, toggleShowExtraData } from './preferences';
 
 	import CardGrid from '$lib/card-grid.svelte';
 	import BeeIcon from '$lib/bee-icon.svelte';
@@ -114,6 +114,48 @@
 							<input type="checkbox" bind:checked={groupByDone} />
 							<div class="label">Move "done" goals to the bottom.</div>
 						</div>
+						<hr />
+						<h6>Extra Details</h6>
+						<div
+							class="pref"
+							role="button"
+							tabindex="0"
+							on:click={(e) => toggleShowExtraData('description')}
+							on:keypress={(e) => toggleShowExtraData('description')}
+						>
+							<input type="checkbox" bind:checked={$preferences.showExtraData.description} />
+							<div class="label">Description</div>
+						</div>
+						<div
+							class="pref"
+							role="button"
+							tabindex="0"
+							on:click={(e) => toggleShowExtraData('lastCompleted')}
+							on:keypress={(e) => toggleShowExtraData('lastCompleted')}
+						>
+							<input type="checkbox" bind:checked={$preferences.showExtraData.lastCompleted} />
+							<div class="label">Last completed date</div>
+						</div>
+						<div
+							class="pref"
+							role="button"
+							tabindex="0"
+							on:click={(e) => toggleShowExtraData('rate')}
+							on:keypress={(e) => toggleShowExtraData('rate')}
+						>
+							<input type="checkbox" bind:checked={$preferences.showExtraData.rate} />
+							<div class="label">Rate</div>
+						</div>
+						<div
+							class="pref"
+							role="button"
+							tabindex="0"
+							on:click={(e) => toggleShowExtraData('finePrint')}
+							on:keypress={(e) => toggleShowExtraData('finePrint')}
+						>
+							<input type="checkbox" bind:checked={$preferences.showExtraData.finePrint} />
+							<div class="label">Fine print</div>
+						</div>
 					</div>
 				</div>
 				<button on:click={signOut}>Sign Out</button>
@@ -194,6 +236,21 @@
 	.prefs {
 		display: flex;
 		position: relative;
+	}
+	hr {
+		border: 0;
+		background-color: hsl(0, 0%, 94%);
+		height: 2px;
+		border-radius: 1rem;
+	}
+	h6 {
+		color: hsl(0, 0%, 70%);
+		font-size: 0.6875rem;
+		margin-top: 1.5rem;
+		margin-bottom: 0.75rem;
+		margin-left: 1rem;
+		text-transform: uppercase;
+		font-weight: 800;
 	}
 	.prefs button {
 		display: flex;
