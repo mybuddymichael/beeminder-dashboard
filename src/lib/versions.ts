@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 26,
+		date: '2023-11-03',
+		description: "Added the goal's maximum buffer as extra data."
+	},
+	{
 		version: 25,
 		date: '2023-11-03',
 		description: 'Added preferences to show or hide the extra goal data.'

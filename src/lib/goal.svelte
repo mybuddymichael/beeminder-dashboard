@@ -10,6 +10,7 @@
 	export let slug: string;
 	export let title: string | null;
 	export let safebuf: number;
+	export let maxBuffer: number;
 	export let pledge: number;
 	export let baremin: string;
 	export let losedate: number;
@@ -25,6 +26,9 @@
 	$: hasBeenDoneToday = isToday(lastdayDate);
 	$: pledgeText = `$${pledge}`;
 	$: color = colorForBuffer(safebuf);
+	$: noMaxBuffer = maxBuffer === null;
+	$: maxBufferString = !noMaxBuffer ? `${maxBuffer}d` : 'None';
+
 	let statusText: string;
 	$: if (baremin) {
 		const timeframe = safebuf === 0 ? 'h' : 'd';
@@ -32,6 +36,7 @@
 			safebuf === 0 ? differenceInHours(new Date(losedate * 1000), new Date()) : safebuf;
 		statusText = `${baremin} in ${value}${timeframe}`;
 	}
+
 	let noDescription = false;
 	$: if (!title || title.length === 0) {
 		title = 'No description given.';
@@ -103,6 +108,10 @@
 		{#if $preferences.showExtraData.rate}
 			<div class="key">Rate</div>
 			<div class="value">{rate % 1 !== 0 ? rate.toFixed(2) : rate} {gunits} / {runits}</div>
+		{/if}
+		{#if $preferences.showExtraData.maxBuffer}
+			<div class="key">Max Buffer</div>
+			<div class="value" class:noMaxBuffer>{maxBufferString}</div>
 		{/if}
 		{#if $preferences.showExtraData.finePrint}
 			<div class="key">Fine Print</div>
@@ -199,10 +208,6 @@
 		font-weight: 450;
 		line-height: normal;
 	}
-	.noDescription {
-		color: #cccccc;
-		font-style: italic;
-	}
 	.additionalInfo {
 		display: grid;
 		grid-template-columns: max-content 1fr;
@@ -243,6 +248,8 @@
 	.value {
 		line-height: 1.4em;
 	}
+	.noDescription,
+	.noMaxBuffer,
 	.noFinePrint {
 		color: #cccccc;
 		font-style: italic;

@@ -134,7 +134,7 @@
 							on:keypress={(e) => toggleShowExtraData('lastCompleted')}
 						>
 							<input type="checkbox" bind:checked={$preferences.showExtraData.lastCompleted} />
-							<div class="label">Last completed date</div>
+							<div class="label">Last completed</div>
 						</div>
 						<div
 							class="pref"
@@ -145,6 +145,16 @@
 						>
 							<input type="checkbox" bind:checked={$preferences.showExtraData.rate} />
 							<div class="label">Rate</div>
+						</div>
+						<div
+							class="pref"
+							role="button"
+							tabindex="0"
+							on:click={(e) => toggleShowExtraData('maxBuffer')}
+							on:keypress={(e) => toggleShowExtraData('maxBuffer')}
+						>
+							<input type="checkbox" bind:checked={$preferences.showExtraData.maxBuffer} />
+							<div class="label">Max buffer</div>
 						</div>
 						<div
 							class="pref"

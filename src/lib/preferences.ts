@@ -3,10 +3,11 @@ import { GroupByOption } from '$lib/goals';
 
 type LastCompletedFormat = 'relative' | 'distance';
 
-type ExtraData = 'description' | 'lastCompleted' | 'rate' | 'finePrint';
+type ExtraData = 'maxBuffer' | 'description' | 'lastCompleted' | 'rate' | 'finePrint';
 
 type Preferences = {
 	showExtraData: {
+		maxBuffer: boolean;
 		description: boolean;
 		lastCompleted: boolean;
 		rate: boolean;
@@ -18,6 +19,7 @@ type Preferences = {
 
 const defaultPreferences: Preferences = {
 	showExtraData: {
+		maxBuffer: true,
 		description: true,
 		lastCompleted: true,
 		rate: true,

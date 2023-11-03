@@ -71,7 +71,7 @@
 		<p>This project is not associated with beeminder.com.</p>
 		<p>
 			All your data is stored locally on this device. (<a
-				href="https://github.com/mybuddymichael/beeminder">Source code</a
+				href="https://github.com/mybuddymichael/beeminder-dashboard">Source code</a
 			>.)
 		</p>
 	</div>

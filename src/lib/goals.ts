@@ -25,14 +25,17 @@ export type GoalBase = {
 // Properties that only exist on the API object.
 export type GoalApi = GoalBase & {
 	mathishard: number[];
+	autoratchet: number;
 };
 // Properties that only exist on the working object.
 export type GoalClean = GoalBase & {
 	rate: number;
+	maxBuffer: number;
 };
 
 export const goalApiToGoalClean = (g: GoalApi) => {
 	return {
+		maxBuffer: g.autoratchet,
 		baremin: g.baremin,
 		id: g.id,
 		lastday: g.lastday,
