@@ -16,6 +16,7 @@ export type GoalBase = {
 	losedate: number;
 	pledge: number;
 	safebuf: number;
+	safebump: number;
 	slug: string;
 	title: string;
 	fineprint: string;
@@ -26,15 +27,18 @@ export type GoalBase = {
 export type GoalApi = GoalBase & {
 	mathishard: number[];
 	autoratchet: number;
+	goal_type: string;
 };
 // Properties that only exist on the working object.
 export type GoalClean = GoalBase & {
 	rate: number;
 	maxBuffer: number;
+	goalType: string;
 };
 
 export const goalApiToGoalClean = (g: GoalApi) => {
 	return {
+		goalType: g.goal_type,
 		maxBuffer: g.autoratchet,
 		baremin: g.baremin,
 		id: g.id,
@@ -42,6 +46,7 @@ export const goalApiToGoalClean = (g: GoalApi) => {
 		losedate: g.losedate,
 		pledge: g.pledge,
 		safebuf: g.safebuf,
+		safebump: g.safebump,
 		slug: g.slug,
 		title: g.title,
 		fineprint: g.fineprint,

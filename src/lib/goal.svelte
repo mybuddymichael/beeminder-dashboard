@@ -9,7 +9,9 @@
 
 	export let slug: string;
 	export let title: string | null;
+	export let goalType: string;
 	export let safebuf: number;
+	export let safebump: number;
 	export let maxBuffer: number;
 	export let pledge: number;
 	export let baremin: string;
@@ -32,9 +34,13 @@
 	let statusText: string;
 	$: if (baremin) {
 		const timeframe = safebuf === 0 ? 'h' : 'd';
+		let rawMin = '';
+		if (goalType === 'biker') {
+			rawMin = `(${Math.round(safebump)})`;
+		}
 		const value =
 			safebuf === 0 ? differenceInHours(new Date(losedate * 1000), new Date()) : safebuf;
-		statusText = `${baremin} in ${value}${timeframe}`;
+		statusText = `${baremin} ${rawMin} in ${value}${timeframe}`;
 	}
 
 	let noDescription = false;
