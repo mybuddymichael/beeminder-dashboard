@@ -1,32 +1,33 @@
 import { isToday } from 'date-fns';
 
-enum GoalColor {
+export enum GoalColor {
 	red = 'red',
 	orange = 'orange',
 	yellow = 'yellow',
 	green = 'green',
 	blue = 'blue',
+	purple = 'purple',
 	gray = 'gray'
 }
 
 export type GoalBase = {
-	baremin: string;
 	id: string;
-	lastday: number;
-	losedate: number;
-	pledge: number;
-	safebuf: number;
-	safebump: number;
-	slug: string;
-	title: string;
-	fineprint: string;
-	runits: string;
-	gunits: string;
+	slug: string; // Name
+	title: string | null; // Description
+	fineprint: string | null;
+	baremin: string; // Minimum required amount due.
+	safebump: number; // Total amount due.
+	lastday: number; // Last day completed.
+	losedate: number; // Midnight at the end of the last day possible.
+	pledge: number; // Money paid on derailing.
+	safebuf: number; // Days before beemergency.
+	gunits: string; // Units of the goal (e.g., 'pages').
+	runits: string; // Time unit for the goal (e.g., 'd', 'm').
 };
 // Properties that only exist on the API object.
 export type GoalApi = GoalBase & {
 	mathishard: number[];
-	autoratchet: number;
+	autoratchet: number; // Max number of buffer days.
 	goal_type: string;
 };
 // Properties that only exist on the working object.
@@ -99,15 +100,17 @@ export const colorForBuffer = (days: number): GoalColor => {
 		return GoalColor.yellow;
 	} else if (days >= 3 && days < 7) {
 		return GoalColor.green;
-	} else if (days >= 7) {
+	} else if (days >= 7 && days < 30) {
 		return GoalColor.blue;
+	} else if (days >= 30) {
+		return GoalColor.purple;
 	}
 	return GoalColor.gray;
 };
 
 export const mostPressingColor = (goals: GoalClean[]) => {
 	if (goals.length === 0) {
-		return GoalColor.blue;
+		return GoalColor.purple;
 	}
 	const lowestUncompletedGoal = goals.reduce((goal, nextGoal) => {
 		if (!isDoneToday(nextGoal) && nextGoal.safebuf < goal.safebuf) {

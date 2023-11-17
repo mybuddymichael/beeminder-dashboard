@@ -192,7 +192,7 @@
 		flex-direction: column;
 		width: 100vw;
 		min-height: 100vh;
-		background-color: #f7f7f7;
+		background-color: #fff;
 	}
 	main {
 		flex: 1 0 auto;

@@ -4,8 +4,11 @@
 
 	import { username, preferences } from '$lib/stores';
 	import { toggleLastCompletedFormat } from '$lib/preferences';
+	import { colorForBuffer } from '$lib/goals';
+
 	import CheckmarkIcon from '$lib/checkmark-icon.svelte';
-	import { colorForBuffer } from './goals';
+	import DataPair from '$lib/data-pair.svelte';
+	import StatusChip from './status-chip.svelte';
 
 	export let slug: string;
 	export let title: string | null;
@@ -22,25 +25,30 @@
 	export let gunits: string;
 	export let fineprint: string | null;
 
-	$: isBook = fineprint && fineprint.match(/#book/);
 	$: isBeemergency = safebuf === 0;
 	$: lastdayDate = new Date(lastday * 1000);
 	$: hasBeenDoneToday = isToday(lastdayDate);
-	$: pledgeText = `$${pledge}`;
 	$: color = colorForBuffer(safebuf);
 	$: noMaxBuffer = maxBuffer === null;
 	$: maxBufferString = !noMaxBuffer ? `${maxBuffer}d` : 'None';
 
-	let statusText: string;
-	$: if (baremin) {
-		const timeframe = safebuf === 0 ? 'h' : 'd';
-		let rawMin = '';
+	// prettier-ignore
+	const emojis = [
+		'💪', '👂', '👀', '🧠', '🫁', '🫀',
+		'📱', '📷', '⏰', '⏳', '💡', '🪫', '🖥️',
+		'🪥', '🚰', '🛌', '📥', '📈', '✍️', '👨‍💻'
+	]
+	const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+
+	let minTotal: number | null = null;
+	let timeLeft: number;
+	let timeUnit: string;
+	$: if (baremin || losedate) {
 		if (goalType === 'biker') {
-			rawMin = `(${Math.round(safebump)})`;
+			minTotal = Math.ceil(safebump);
 		}
-		const value =
-			safebuf === 0 ? differenceInHours(new Date(losedate * 1000), new Date()) : safebuf;
-		statusText = `${baremin} ${rawMin} in ${value}${timeframe}`;
+		timeLeft = safebuf === 0 ? differenceInHours(new Date(losedate * 1000), new Date()) : safebuf;
+		timeUnit = safebuf === 0 ? 'h' : 'd';
 	}
 
 	let noDescription = false;
@@ -50,6 +58,20 @@
 	} else {
 		noDescription = false;
 	}
+
+	const convertRUnit = (runit: string) => {
+		if (runit === 'd') {
+			return 'day';
+		} else if (runit === 'w') {
+			return 'week';
+		} else if (runit === 'm') {
+			return 'month';
+		} else if (runit === 'y') {
+			return 'year';
+		} else {
+			return '?';
+		}
+	};
 
 	let lastCompletedDateString: string;
 	const updateLastCompletedDate = (date: Date) => {
@@ -79,19 +101,19 @@
 	});
 </script>
 
-<div class="container" class:done={hasBeenDoneToday && !isBeemergency}>
+<div class="container {color}" class:done={hasBeenDoneToday && !isBeemergency}>
+	<!-- <div class="emoji">
+		<div class="emojiLabel">
+			{emoji}
+		</div>
+	</div> -->
 	<div class="topSection">
 		<div class="name-status">
 			<div class="name">
-				<a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a>
-				<div class="checkmark"><CheckmarkIcon /></div>
+				<span><a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a></span>
+				<div class="checkmark"><CheckmarkIcon {color} /></div>
 			</div>
-			<div class="status {color}">
-				{statusText}
-				{#if safebuf === 0}
-					<span class="dot"> • </span>{pledgeText}
-				{/if}
-			</div>
+			<StatusChip {color} {baremin} {minTotal} {timeLeft} {timeUnit} {pledge} />
 		</div>
 		{#if $preferences.showExtraData.description}
 			<div class="description" class:noDescription>{title}</div>
@@ -99,165 +121,156 @@
 	</div>
 	<div class="additionalInfo">
 		{#if $preferences.showExtraData.lastCompleted}
-			<div class="key">Last completed</div>
-			<div class="value lastCompletedDate">
-				<span
-					role="button"
-					tabindex="0"
-					on:click={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
-					on:keypress={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
-				>
-					{lastCompletedDateString}
-				</span>
-			</div>
+			<DataPair
+				{color}
+				key="Last completed"
+				value={lastCompletedDateString}
+				onClick={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
+			/>
 		{/if}
-		{#if $preferences.showExtraData.rate}
-			<div class="key">Rate</div>
-			<div class="value">{rate % 1 !== 0 ? rate.toFixed(2) : rate} {gunits} / {runits}</div>
+		{#if $preferences.showExtraData.rate && rate}
+			<DataPair
+				{color}
+				key="Rate"
+				value="{rate % 1 !== 0 ? rate.toFixed(1) : rate} {gunits} per {convertRUnit(runits)}"
+			/>
 		{/if}
-		{#if $preferences.showExtraData.maxBuffer}
-			<div class="key">Max Buffer</div>
-			<div class="value" class:noMaxBuffer>{maxBufferString}</div>
+		{#if $preferences.showExtraData.maxBuffer && maxBuffer}
+			<DataPair {color} key="Max buffer" value={maxBufferString} />
 		{/if}
-		{#if $preferences.showExtraData.finePrint}
-			<div class="key">Fine Print</div>
-			{#if fineprint && !isBook}
-				<div class="value">{fineprint}</div>
-			{:else if isBook}
-				<div class="value noFinePrint">This goal is a book.</div>
-			{:else}
-				<div class="value noFinePrint">No fine print for this goal.</div>
-			{/if}
+		{#if $preferences.showExtraData.finePrint && fineprint}
+			<DataPair {color} key="Fine print" value={fineprint} />
 		{/if}
 	</div>
 </div>
 
 <style>
 	.container {
+		position: relative;
 		display: flex;
 		flex-direction: column;
-		background-color: #fff;
 		border-radius: 0.375rem;
-		border: 1px solid #f2f2f2;
+		padding: 1rem;
+		background-color: #fff;
 		transition: opacity 0.5s;
+		min-width: 0;
 	}
 	.container.done {
 		opacity: 45%;
+	}
+	.container.red {
+		background-color: hsla(0, 100%, 97%, 1);
+	}
+	.container.orange {
+		background-color: hsla(28, 100%, 96%, 1);
+	}
+	.container.yellow {
+		background-color: hsla(52, 100%, 96%, 1);
+	}
+	.container.green {
+		background-color: hsla(104, 100%, 98%, 1);
+	}
+	.container.blue {
+		background-color: hsla(215, 100%, 98%, 1);
+	}
+	.container.purple {
+		background-color: hsla(277, 100%, 98%, 1);
 	}
 	.topSection {
 		display: flex;
 		flex-direction: column;
 		gap: 0.75rem;
-		padding: 1rem;
 	}
 	.name-status {
 		display: flex;
+		flex-direction: column;
+		align-items: start;
+		gap: 0.375rem;
+	}
+	.nameContainer {
+		display: flex;
 		flex-direction: row;
-		justify-content: space-between;
 		align-items: center;
+		width: 100%;
+		justify-content: space-between;
+		min-width: 0;
 	}
 	.name {
 		display: flex;
 		flex-direction: row;
+		align-items: center;
 		gap: 0.5rem;
-		font-size: 0.875rem;
-		font-weight: 700;
+		padding-right: 2rem;
+		max-width: calc(100% - 3rem);
+	}
+	.name span {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		font-family: 'Nunito';
+		font-size: 1rem;
+		font-weight: 800;
+		line-height: normal;
+	}
+	.red .name {
+		color: hsla(0, 100%, 39%, 1);
+	}
+	.orange .name {
+		color: hsla(28, 100%, 47%, 1);
+	}
+	.yellow .name {
+		color: hsla(52, 100%, 33%, 1);
+	}
+	.green .name {
+		color: hsla(104, 100%, 25%, 1);
+	}
+	.blue .name {
+		color: hsla(209, 100%, 37%, 1);
+	}
+	.purple .name {
+		color: hsla(276, 100%, 40%, 1);
 	}
 	.name a {
 		color: inherit;
 		text-decoration: none;
 	}
+	.emoji {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		padding: 0.5rem;
+		cursor: pointer;
+		border-radius: 0.25rem;
+	}
+	.emoji:hover {
+		background-color: hsla(0, 0%, 100%, 0.85);
+	}
+	.emojiLabel {
+		font-size: 1.5rem;
+		line-height: 1.5rem;
+		user-select: none;
+		text-align: center;
+	}
 	.checkmark {
 		display: none;
-		height: 0.75rem;
-		width: 0.75rem;
+		height: 1rem;
+		width: 1rem;
+		flex-shrink: 0;
 	}
 	.done .checkmark {
 		display: block;
 	}
-	.status {
-		padding: 0.125rem 0.3125rem;
-		font-size: 0.6875rem;
-		font-weight: 500;
-		line-height: normal;
-		border-radius: 0.25rem;
-		background: #eee;
-	}
-	.status.red {
-		color: #fff;
-		background: linear-gradient(145deg, #ff3232 0%, #8e0000 100%);
-	}
-	.status.orange {
-		color: #000;
-		background: linear-gradient(137deg, #ffdc81 0%, #ff862e 100%);
-	}
-	.status.yellow {
-		color: #000;
-		background: linear-gradient(137deg, hsla(60, 100%, 72%, 1), hsla(50, 100%, 49%, 1));
-	}
-	.status.green {
-		color: #000;
-		background: linear-gradient(137deg, #cfffbe 0%, #a0dc8a 100%);
-	}
-	.status.blue {
-		color: #000;
-		background: linear-gradient(137deg, hsl(216 100% 50% / 30%) 0%, hsla(223 100% 33% / 30%) 100%);
-	}
-	.dot {
-		opacity: 0.5;
-	}
 	.description {
-		color: #848484;
+		color: hsla(0, 0%, 43%, 1);
 		font-family: Inter;
-		font-size: 0.6875rem;
+		font-size: 0.75rem;
 		font-style: normal;
-		font-weight: 450;
+		font-weight: 500;
 		line-height: normal;
 	}
 	.additionalInfo {
-		display: grid;
-		grid-template-columns: max-content 1fr;
-	}
-	.key,
-	.value {
-		border-top: 1px solid #f0f0f0;
-		padding: 0.625rem 1rem;
-	}
-	.key {
-		/* background-color: hsl(0 0% 98% / 100%); */
-		border-right: 1px solid #f2f2f2;
-		color: #848484;
-		font-size: 0.625rem;
-		font-style: normal;
-		font-weight: 850;
-		line-height: normal;
-		text-transform: uppercase;
-	}
-	.value {
 		display: flex;
-		align-items: center;
-		padding-left: 0.75rem;
-		color: hsl(0, 0%, 52%);
-		font-size: 0.6875rem;
-		font-style: normal;
-		font-weight: 500;
-	}
-	.lastCompletedDate span {
-		border-bottom: 1px solid hsl(0 0% 52% / 15%);
-		cursor: pointer;
-		user-select: none;
-	}
-	.lastCompletedDate span::first-letter {
-		text-transform: capitalize;
-	}
-	.key,
-	.value {
-		line-height: 1.4em;
-	}
-	.noDescription,
-	.noMaxBuffer,
-	.noFinePrint {
-		color: #cccccc;
-		font-style: italic;
+		flex-direction: column;
+		gap: 0.625rem;
 	}
 </style>

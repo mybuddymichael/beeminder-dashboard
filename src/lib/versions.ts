@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 28,
+		date: '2023-11-28',
+		description: 'Refreshed the design with more character.'
+	},
+	{
 		version: 27,
 		date: '2023-11-12',
 		description: 'Added the total number necessary to the requirement for odometer goals.'
