@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { spring, tweened } from 'svelte/motion';
+	import { quartIn } from 'svelte/easing';
 
 	import { signOut } from './auth';
 	import { preferences } from '$lib/stores';
@@ -18,6 +20,9 @@
 	const VERSION = versionObj.version;
 	const DATE = versionObj.date;
 	const DESCRIPTION = versionObj.description;
+
+	const transformSpring = spring(0, { stiffness: 0.22, damping: 0.485, precision: 0.0001 });
+	const transformTween = tweened(0, { duration: 90, easing: quartIn });
 
 	$: keyColor = mostPressingColor(allGoals);
 
@@ -48,11 +53,23 @@
 	};
 
 	const togglePrefs = (e: MouseEvent) => {
-		showPrefs = !showPrefs;
+		if (showPrefs) {
+			showPrefs = false;
+			transformSpring.set(0);
+			transformTween.set(0);
+		} else {
+			showPrefs = true;
+			transformSpring.set(1);
+			transformTween.set(1);
+		}
 		e.stopPropagation();
 	};
+	$: animationValue = showPrefs ? $transformSpring : $transformTween;
+
 	const hidePrefs = (e: MouseEvent) => {
 		showPrefs = false;
+		transformSpring.set(0);
+		transformTween.set(0);
 		e.stopPropagation();
 	};
 	const stopPropagation = (e: Event) => e.stopPropagation();
@@ -99,6 +116,7 @@
 					<div
 						class="prefsMenu"
 						class:showPrefs
+						style="transform: scale({animationValue}); opacity: {animationValue}"
 						role="menu"
 						tabindex="0"
 						on:click={stopPropagation}
@@ -273,7 +291,7 @@
 		background-color: #f7f7f7;
 	}
 	.prefsMenu {
-		display: none;
+		transform-origin: top right;
 		width: max-content;
 		position: absolute;
 		top: calc(100% + 0.75rem);
@@ -284,9 +302,6 @@
 		box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.1);
 		padding: 1rem;
 		z-index: 100;
-	}
-	.prefsMenu.showPrefs {
-		display: block;
 	}
 	.pref {
 		display: flex;

@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 29,
+		date: '2023-12-05',
+		description: 'Added an animation to the preferences menu.'
+	},
+	{
 		version: 28,
 		date: '2023-11-28',
 		description: 'Refreshed the design with more character.'

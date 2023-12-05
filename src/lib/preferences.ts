@@ -17,7 +17,7 @@ type Preferences = {
 	lastCompletedFormat: LastCompletedFormat;
 };
 
-const defaultPreferences: Preferences = {
+export const defaultPreferences: Preferences = {
 	showExtraData: {
 		maxBuffer: true,
 		description: true,
@@ -61,7 +61,6 @@ export const setGroupByOption = (option: GroupByOption) => {
 export const toggleShowExtraData = (category: ExtraData) => {
 	preferences.update((prev) => {
 		const showExtraData = { ...prev.showExtraData, [category]: !prev.showExtraData[category] };
-		console.log(showExtraData);
 		return { ...prev, showExtraData };
 	});
 };

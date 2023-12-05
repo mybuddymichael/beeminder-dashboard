@@ -1,4 +1,4 @@
-import { signedIn, username } from './stores';
+import { signedIn, username, reset } from './stores';
 
 export type AuthToken = {
 	username: string;
@@ -13,7 +13,6 @@ export function signIn(token: AuthToken) {
 }
 
 export function signOut() {
-	localStorage.clear();
-	username.set('');
-	signedIn.set(false);
+	setTimeout(() => localStorage.clear(), 100); // doesn't fully clear unless I wait a bit
+	reset();
 }
