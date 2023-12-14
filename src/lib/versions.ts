@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 30,
+		date: '2023-12-14',
+		description: 'Fixed the settings icon looking awful in Safari.'
+	},
+	{
 		version: 29,
 		date: '2023-12-05',
 		description: 'Added an animation to the preferences menu.'
