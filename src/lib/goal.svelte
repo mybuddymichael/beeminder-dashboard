@@ -102,11 +102,11 @@
 </script>
 
 <div class="container {color}" class:done={hasBeenDoneToday && !isBeemergency}>
-	<!-- <div class="emoji">
+	<div class="emoji">
 		<div class="emojiLabel">
 			{emoji}
 		</div>
-	</div> -->
+	</div>
 	<div class="topSection">
 		<div class="name-status">
 			<div class="name">
