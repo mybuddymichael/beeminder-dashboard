@@ -12,6 +12,7 @@
 
 	import { setGroupByOption, toggleShowExtraData } from './preferences';
 
+	import PrefOption from '$lib/pref-option.svelte';
 	import CardGrid from '$lib/card-grid.svelte';
 	import BeeIcon from '$lib/bee-icon.svelte';
 	import SettingsIcon from '$lib/settings-icon.svelte';
@@ -23,10 +24,11 @@
 
 	const transformSpring = spring(0, { stiffness: 0.22, damping: 0.485, precision: 0.0001 });
 	const transformTween = tweened(0, { duration: 90, easing: quartIn });
+	let showPrefs = false;
+	$: animationValue = showPrefs ? $transformSpring : $transformTween;
 
 	$: keyColor = mostPressingColor(allGoals);
 
-	let showPrefs = false;
 	$: groupByDone = $preferences.groupBy === GroupByOption.done;
 	const toggleGroupByDone = (e: Event) => {
 		groupByDone = !groupByDone;
@@ -64,7 +66,6 @@
 		}
 		e.stopPropagation();
 	};
-	$: animationValue = showPrefs ? $transformSpring : $transformTween;
 
 	const hidePrefs = (e: MouseEvent) => {
 		showPrefs = false;
@@ -122,68 +123,38 @@
 						on:click={stopPropagation}
 						on:keydown={stopPropagation}
 					>
-						<div
-							class="pref"
-							role="button"
-							tabindex="0"
-							on:click={toggleGroupByDone}
-							on:keypress={toggleGroupByDone}
-						>
-							<input type="checkbox" bind:checked={groupByDone} />
-							<div class="label">Move "done" goals to the bottom.</div>
-						</div>
+						<PrefOption
+							handler={toggleGroupByDone}
+							checked={groupByDone}
+							label={`Move "done" goals to the bottom.`}
+						/>
 						<hr />
 						<h6>Extra Details</h6>
-						<div
-							class="pref"
-							role="button"
-							tabindex="0"
-							on:click={(e) => toggleShowExtraData('description')}
-							on:keypress={(e) => toggleShowExtraData('description')}
-						>
-							<input type="checkbox" bind:checked={$preferences.showExtraData.description} />
-							<div class="label">Description</div>
-						</div>
-						<div
-							class="pref"
-							role="button"
-							tabindex="0"
-							on:click={(e) => toggleShowExtraData('lastCompleted')}
-							on:keypress={(e) => toggleShowExtraData('lastCompleted')}
-						>
-							<input type="checkbox" bind:checked={$preferences.showExtraData.lastCompleted} />
-							<div class="label">Last completed</div>
-						</div>
-						<div
-							class="pref"
-							role="button"
-							tabindex="0"
-							on:click={(e) => toggleShowExtraData('rate')}
-							on:keypress={(e) => toggleShowExtraData('rate')}
-						>
-							<input type="checkbox" bind:checked={$preferences.showExtraData.rate} />
-							<div class="label">Rate</div>
-						</div>
-						<div
-							class="pref"
-							role="button"
-							tabindex="0"
-							on:click={(e) => toggleShowExtraData('maxBuffer')}
-							on:keypress={(e) => toggleShowExtraData('maxBuffer')}
-						>
-							<input type="checkbox" bind:checked={$preferences.showExtraData.maxBuffer} />
-							<div class="label">Max buffer</div>
-						</div>
-						<div
-							class="pref"
-							role="button"
-							tabindex="0"
-							on:click={(e) => toggleShowExtraData('finePrint')}
-							on:keypress={(e) => toggleShowExtraData('finePrint')}
-						>
-							<input type="checkbox" bind:checked={$preferences.showExtraData.finePrint} />
-							<div class="label">Fine print</div>
-						</div>
+						<PrefOption
+							handler={(_) => toggleShowExtraData('description')}
+							checked={$preferences.showExtraData.description}
+							label="Description"
+						/>
+						<PrefOption
+							handler={(_) => toggleShowExtraData('lastCompleted')}
+							checked={$preferences.showExtraData.lastCompleted}
+							label="Last completed"
+						/>
+						<PrefOption
+							handler={(_) => toggleShowExtraData('rate')}
+							checked={$preferences.showExtraData.rate}
+							label="Rate"
+						/>
+						<PrefOption
+							handler={(_) => toggleShowExtraData('maxBuffer')}
+							checked={$preferences.showExtraData.maxBuffer}
+							label="Maximum buffer"
+						/>
+						<PrefOption
+							handler={(_) => toggleShowExtraData('finePrint')}
+							checked={$preferences.showExtraData.finePrint}
+							label="Fine print"
+						/>
 					</div>
 				</div>
 				<button on:click={signOut}>Sign Out</button>
@@ -302,30 +273,6 @@
 		box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.1);
 		padding: 1rem;
 		z-index: 100;
-	}
-	.pref {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		cursor: pointer;
-		gap: 0.3rem;
-		padding: 0.5rem;
-		border-radius: 0.5rem;
-	}
-	.pref:hover {
-		background-color: #f7f7f7;
-	}
-	.pref input {
-		cursor: pointer;
-		/* margin-top: 0.2125rem; */
-		width: 2rem;
-	}
-	.pref .label {
-		font-size: 0.8125rem;
-		font-weight: 500;
-		max-width: 8rem;
-		line-height: 1.25rem;
-		user-select: none;
 	}
 	.divider {
 		width: calc(100% - 2.5rem);
