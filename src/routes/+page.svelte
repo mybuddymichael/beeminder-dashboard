@@ -1,11 +1,18 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { signedIn, username } from '$lib/stores';
+	import { betaFeatures, signedIn, username } from '$lib/stores';
+	import { page } from '$app/stores';
 
 	import SignIn from '$lib/signin.svelte';
 	import Dashboard from '$lib/dashboard.svelte';
 
 	let loading = true;
+	const useEmoji = $page.url.searchParams.has('emoji');
+	$: if (useEmoji) {
+		betaFeatures.update((prev) => {
+			return { ...prev, useEmoji: true };
+		});
+	}
 
 	onMount(() => {
 		const u = localStorage.getItem('username');

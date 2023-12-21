@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { differenceInHours, formatDistance, formatRelative, isToday } from 'date-fns';
+	import emojiRegex from 'emoji-regex';
 
-	import { username, preferences } from '$lib/stores';
+	import { betaFeatures, emoji as emojiStore, username, preferences } from '$lib/stores';
 	import { toggleLastCompletedFormat } from '$lib/preferences';
 	import { colorForBuffer } from '$lib/goals';
 
 	import CheckmarkIcon from '$lib/checkmark-icon.svelte';
 	import DataPair from '$lib/data-pair.svelte';
+	import { updateEmoji } from '$lib/emoji';
+	import Popover from './popover.svelte';
 	import StatusChip from './status-chip.svelte';
 
 	export let slug: string;
@@ -32,13 +35,34 @@
 	$: noMaxBuffer = maxBuffer === null;
 	$: maxBufferString = !noMaxBuffer ? `${maxBuffer}d` : 'None';
 
+	let emojiInput = '';
+	const emojiRegexPattern = emojiRegex();
+	$: if (emojiInput) {
+		if (!emojiRegexPattern.test(emojiInput)) {
+			emojiInput = '';
+		} else {
+			updateEmoji(emojiInput, slug);
+		}
+	}
+
 	// prettier-ignore
 	const emojis = [
 		'💪', '👂', '👀', '🧠', '🫁', '🫀',
 		'📱', '📷', '⏰', '⏳', '💡', '🪫', '🖥️',
 		'🪥', '🚰', '🛌', '📥', '📈', '✍️', '👨‍💻'
 	]
-	const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+	const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+	let isRandom = false;
+	let thisEmoji: string;
+	$: existingEmoji = $emojiStore.find((e) => e.goal === slug);
+	$: if (existingEmoji) {
+		thisEmoji = existingEmoji.emoji;
+		isRandom = false;
+	} else {
+		thisEmoji = randomEmoji;
+		isRandom = true;
+	}
+	let emojiPopoverIsOpen = false;
 
 	let minTotal: number | null = null;
 	let timeLeft: number;
@@ -101,12 +125,28 @@
 	});
 </script>
 
-<div class="container {color}" class:done={hasBeenDoneToday && !isBeemergency}>
-	<!-- <div class="emoji">
-		<div class="emojiLabel">
-			{emoji}
+<div
+	class="container {color}"
+	class:done={hasBeenDoneToday && !isBeemergency}
+	class:emojiPopoverIsOpen
+>
+	{#if $betaFeatures.useEmoji}
+		<div class="emojiButtonContainer">
+			<Popover bind:isOpen={emojiPopoverIsOpen} padding="1.5rem">
+				<div class="emojiButton" class:isRandom slot="button">
+					<span>{thisEmoji}</span>
+				</div>
+				<div class="popoverContents" slot="contents">
+					<input
+						bind:value={emojiInput}
+						class="emojiInput"
+						type="text"
+						placeholder={thisEmoji ?? randomEmoji}
+					/>
+				</div>
+			</Popover>
 		</div>
-	</div> -->
+	{/if}
 	<div class="topSection">
 		<div class="name-status">
 			<div class="name">
@@ -152,11 +192,15 @@
 		border-radius: 0.375rem;
 		padding: 1rem;
 		background-color: #fff;
-		transition: opacity 0.5s;
+		transition: opacity 0.175s;
 		min-width: 0;
 	}
 	.container.done {
 		opacity: 45%;
+	}
+	.container:hover,
+	.container.emojiPopoverIsOpen {
+		opacity: 100%;
 	}
 	.container.red {
 		background-color: hsla(0, 100%, 97%, 1);
@@ -234,22 +278,44 @@
 		color: inherit;
 		text-decoration: none;
 	}
-	.emoji {
+	.emojiButtonContainer {
 		position: absolute;
 		top: 0.5rem;
 		right: 0.5rem;
+	}
+	.emojiButton {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		padding: 0.5rem;
-		cursor: pointer;
-		border-radius: 0.25rem;
-	}
-	.emoji:hover {
-		background-color: hsla(0, 0%, 100%, 0.85);
-	}
-	.emojiLabel {
 		font-size: 1.5rem;
 		line-height: 1.5rem;
 		user-select: none;
 		text-align: center;
+	}
+	.emojiButton.isRandom span {
+		opacity: 50%;
+		filter: grayscale(100%);
+	}
+	.popoverContents {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.emojiInput {
+		font-size: 1.5rem;
+		width: 2rem;
+		text-align: center;
+		padding: 0.5rem;
+		border: none;
+		outline: none;
+	}
+	.emojiInput::placeholder {
+		filter: saturate(0);
+	}
+	.emojiInput:focus::placeholder {
+		color: transparent;
 	}
 	.checkmark {
 		display: none;
