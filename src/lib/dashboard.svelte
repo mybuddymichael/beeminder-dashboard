@@ -224,10 +224,6 @@
 		justify-content: center;
 		align-items: center;
 		padding: 0.5rem;
-		border-radius: 0.25rem;
-	}
-	.prefsButton:hover {
-		background-color: #f7f7f7;
 	}
 	.divider {
 		width: calc(100% - 2.5rem);

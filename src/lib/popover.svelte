@@ -4,6 +4,9 @@
 
 	import { popoverIsOpen } from '$lib/stores';
 
+	export let activeColor = 'rgba(0 0 0 / 0.04);';
+	export let borderRadius = '0.25rem';
+
 	const transformSpring = spring(0, { stiffness: 0.22, damping: 0.485, precision: 0.0001 });
 	const transformTween = tweened(0, { duration: 90, easing: quartIn });
 
@@ -43,7 +46,11 @@
 	}
 </script>
 
-<div class="container">
+<div
+	class="container"
+	class:isOpen
+	style={`--active-color: ${activeColor}; --border-radius: ${borderRadius}`}
+>
 	<button on:click={toggleOpen}>
 		<slot name="button" />
 	</button>
@@ -68,6 +75,11 @@
 		padding: 0;
 		border: 0;
 		background: none;
+		border-radius: var(--border-radius);
+	}
+	.isOpen button,
+	button:hover {
+		background-color: var(--active-color);
 	}
 	.contents {
 		transform-origin: top right;
