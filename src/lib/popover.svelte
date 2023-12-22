@@ -46,12 +46,12 @@
 	}
 </script>
 
-<div
-	class="container"
-	class:isOpen
-	style={`--active-color: ${activeColor}; --border-radius: ${borderRadius}`}
->
-	<button on:click={toggleOpen}>
+<div class="container">
+	<button
+		on:click={toggleOpen}
+		class:isOpen
+		style={`--active-color: ${activeColor}; --border-radius: ${borderRadius}`}
+	>
 		<slot name="button" />
 	</button>
 	<div
@@ -68,7 +68,7 @@
 
 <style>
 	.container {
-		position: relative;
+		position: relative; /* .contents will position against this */
 	}
 	button {
 		margin: 0;
@@ -77,7 +77,7 @@
 		background: none;
 		border-radius: var(--border-radius);
 	}
-	.isOpen button,
+	button.isOpen,
 	button:hover {
 		background-color: var(--active-color);
 	}
