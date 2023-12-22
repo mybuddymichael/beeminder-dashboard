@@ -8,8 +8,9 @@
 
 	import CheckmarkIcon from '$lib/checkmark-icon.svelte';
 	import DataPair from '$lib/data-pair.svelte';
-	import StatusChip from './status-chip.svelte';
+	import { emoji } from '$lib/emoji';
 	import Popover from './popover.svelte';
+	import StatusChip from './status-chip.svelte';
 
 	export let slug: string;
 	export let title: string | null;
@@ -33,13 +34,9 @@
 	$: noMaxBuffer = maxBuffer === null;
 	$: maxBufferString = !noMaxBuffer ? `${maxBuffer}d` : 'None';
 
-	// prettier-ignore
-	const emojis = [
-		'💪', '👂', '👀', '🧠', '🫁', '🫀',
-		'📱', '📷', '⏰', '⏳', '💡', '🪫', '🖥️',
-		'🪥', '🚰', '🛌', '📥', '📈', '✍️', '👨‍💻'
-	]
-	const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+	const emojiStrings = emoji.map((e) => e.emoji);
+	// Temp
+	const randomEmoji = emojiStrings[Math.floor(Math.random() * emojiStrings.length)];
 
 	let minTotal: number | null = null;
 	let timeLeft: number;
@@ -106,10 +103,10 @@
 	<div class="emojiButtonContainer">
 		<Popover>
 			<div class="emojiButton" slot="button">
-				<span>{emoji}</span>
+				<span>{randomEmoji}</span>
 			</div>
 			<div class="emojis" slot="contents">
-				{#each emojis as emoji (emoji)}
+				{#each emojiStrings as emoji (emoji)}
 					<button class="emoji">{emoji}</button>
 				{/each}
 			</div>
@@ -248,20 +245,18 @@
 		right: 0.5rem;
 	}
 	.emojiButton {
-		border-radius: 0.25rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		padding: 0.5rem;
 		font-size: 1.5rem;
 		line-height: 1.5rem;
 		user-select: none;
 		text-align: center;
 	}
-	.emojiButton:hover {
-		background-color: hsla(0, 0%, 100%, 0.85);
-	}
 	.emojis {
 		display: grid;
-		grid-template-columns: repeat(5, minmax(0, 1fr));
-		gap: 0.5rem;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 	}
 	.emoji {
 		display: flex;
@@ -269,9 +264,8 @@
 		align-items: center;
 		text-align: center;
 		font-size: 1.5rem;
-		width: calc(1em + 1rem);
-		height: calc(1em + 1rem);
-		padding: 0.5rem;
+		line-height: 1.5rem;
+		padding: 0.75rem;
 		border-radius: 0.5rem;
 		margin: 0;
 		border: 0;
