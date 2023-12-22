@@ -1,12 +1,10 @@
 import { emoji as emojiStore } from '$lib/stores';
 
 export enum EmojiCategory {
-	exercise = 'Exercise',
-	food = 'Food',
-	health = 'Health',
-	// life = 'Life',
-	productivity = 'Productivity',
-	reading = 'Reading'
+	people = 'People',
+	animalsAndNature = 'Animals & Nature',
+	foodAndDrink = 'Food & Drink',
+	objects = 'Objects'
 }
 type EmojiName = string;
 type Emoji = string;
@@ -46,26 +44,36 @@ export const updateEmoji = (emoji: Emoji, goal: string) => {
 };
 
 export const emojis: EmojiObject[] = [
-	{ name: 'Flexed Biceps', emoji: '💪', category: EmojiCategory.exercise },
-	{ name: 'Person Lifting Weights', emoji: '🏋️', category: EmojiCategory.exercise },
-	{ name: 'Person Running', emoji: '🏃', category: EmojiCategory.exercise },
-	{ name: 'Running Shoe', emoji: '👟', category: EmojiCategory.exercise },
+	{ name: 'Flexed Biceps', emoji: '💪', category: EmojiCategory.people },
+	{ name: 'Folded Hands', emoji: '🙏', category: EmojiCategory.people },
+	{ name: 'Writing Hand', emoji: '✍️', category: EmojiCategory.people },
+	{ name: 'Brain', emoji: '🧠', category: EmojiCategory.people },
+	{ name: 'Anatomical Heart', emoji: '🫀', category: EmojiCategory.people },
+	{ name: 'Lungs', emoji: '🫁', category: EmojiCategory.people },
+	{ name: 'Person Lifting Weights', emoji: '🏋️', category: EmojiCategory.people },
+	{ name: 'Person Running', emoji: '🏃', category: EmojiCategory.people },
+	{ name: 'Technologist', emoji: '🧑‍💻', category: EmojiCategory.people },
 
-	{ name: 'Carrot', emoji: '🥕', category: EmojiCategory.food },
-	{ name: 'Green Salad', emoji: '🥗', category: EmojiCategory.food },
-	{ name: 'Potable Water', emoji: '🚰', category: EmojiCategory.food },
-	{ name: 'Red Apple', emoji: '🍎', category: EmojiCategory.food },
+	{ name: 'Dog Face', emoji: '🐶', category: EmojiCategory.animalsAndNature },
+	{ name: 'Droplet', emoji: '💧', category: EmojiCategory.animalsAndNature },
+	{ name: 'Water Wave', emoji: '🌊', category: EmojiCategory.animalsAndNature },
 
-	{ name: 'Toothbrush', emoji: '🪥', category: EmojiCategory.health },
+	{ name: 'Avocado', emoji: '🥑', category: EmojiCategory.foodAndDrink },
+	{ name: 'Carrot', emoji: '🥕', category: EmojiCategory.foodAndDrink },
+	{ name: 'Green Salad', emoji: '🥗', category: EmojiCategory.foodAndDrink },
+	{ name: 'Potable Water', emoji: '🚰', category: EmojiCategory.foodAndDrink },
+	{ name: 'Red Apple', emoji: '🍎', category: EmojiCategory.foodAndDrink },
 
-	{ name: 'Alarm Clock', emoji: '⏰', category: EmojiCategory.productivity },
-	{ name: 'Brain', emoji: '🧠', category: EmojiCategory.productivity },
-	{ name: 'Hourglass Not Done', emoji: '⏳', category: EmojiCategory.productivity },
-	{ name: 'Writing Hand', emoji: '✍️', category: EmojiCategory.productivity },
-
-	{ name: 'Books', emoji: '📚', category: EmojiCategory.reading },
-	{ name: 'Closed Book', emoji: '📕', category: EmojiCategory.reading },
-	{ name: 'Open Book', emoji: '📖', category: EmojiCategory.reading }
+	{ name: 'Running Shoe', emoji: '👟', category: EmojiCategory.objects },
+	{ name: 'Toothbrush', emoji: '🪥', category: EmojiCategory.objects },
+	{ name: 'Dollar Banknote', emoji: '💵', category: EmojiCategory.objects },
+	{ name: 'Hourglass Not Done', emoji: '⏳', category: EmojiCategory.objects },
+	{ name: 'Alarm Clock', emoji: '⏰', category: EmojiCategory.objects },
+	{ name: 'Desktop Computer', emoji: '🖥️', category: EmojiCategory.objects },
+	{ name: 'Laptop', emoji: '💻', category: EmojiCategory.objects },
+	{ name: 'Books', emoji: '📚', category: EmojiCategory.objects },
+	{ name: 'Closed Book', emoji: '📕', category: EmojiCategory.objects },
+	{ name: 'Open Book', emoji: '📖', category: EmojiCategory.objects }
 ];
 
 // Old Reference

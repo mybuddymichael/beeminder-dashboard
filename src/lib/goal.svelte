@@ -288,12 +288,12 @@
 	}
 	.emojis {
 		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
+		grid-template-columns: repeat(5, minmax(0, 1fr));
 	}
 	.emojiCategory {
 		color: hsl(0, 0%, 70%);
 		grid-column: 1 / -1;
-		margin-top: 1rem;
+		margin-top: 0.75rem;
 		margin-bottom: 0.25rem;
 		font-weight: 800;
 		font-size: 0.6875rem;
