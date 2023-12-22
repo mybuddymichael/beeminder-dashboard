@@ -2,13 +2,13 @@
 	import { onMount } from 'svelte';
 	import { differenceInHours, formatDistance, formatRelative, isToday } from 'date-fns';
 
-	import { username, preferences } from '$lib/stores';
+	import { emoji as emojiStore, username, preferences } from '$lib/stores';
 	import { toggleLastCompletedFormat } from '$lib/preferences';
 	import { colorForBuffer } from '$lib/goals';
 
 	import CheckmarkIcon from '$lib/checkmark-icon.svelte';
 	import DataPair from '$lib/data-pair.svelte';
-	import { emoji } from '$lib/emoji';
+	import { emojis, updateEmoji } from '$lib/emoji';
 	import Popover from './popover.svelte';
 	import StatusChip from './status-chip.svelte';
 
@@ -34,9 +34,17 @@
 	$: noMaxBuffer = maxBuffer === null;
 	$: maxBufferString = !noMaxBuffer ? `${maxBuffer}d` : 'None';
 
-	const emojiStrings = emoji.map((e) => e.emoji);
-	// Temp
-	const randomEmoji = emojiStrings[Math.floor(Math.random() * emojiStrings.length)];
+	const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+	let isRandom = false;
+	$: existingEmoji = $emojiStore.find((e) => e.goal === slug);
+	let thisEmoji: string;
+	$: if (existingEmoji) {
+		thisEmoji = existingEmoji.emoji;
+		isRandom = false;
+	} else {
+		thisEmoji = randomEmoji.emoji;
+		isRandom = true;
+	}
 
 	let minTotal: number | null = null;
 	let timeLeft: number;
@@ -102,12 +110,17 @@
 <div class="container {color}" class:done={hasBeenDoneToday && !isBeemergency}>
 	<div class="emojiButtonContainer">
 		<Popover>
-			<div class="emojiButton" slot="button">
-				<span>{randomEmoji}</span>
+			<div class="emojiButton" class:isRandom slot="button">
+				<span>{thisEmoji}</span>
 			</div>
 			<div class="emojis" slot="contents">
-				{#each emojiStrings as emoji (emoji)}
-					<button class="emoji">{emoji}</button>
+				{#each emojis as e (e.name)}
+					<button
+						class="emoji"
+						on:click={(_) => {
+							updateEmoji(e.emoji, slug);
+						}}>{e.emoji}</button
+					>
 				{/each}
 			</div>
 		</Popover>
@@ -253,6 +266,10 @@
 		line-height: 1.5rem;
 		user-select: none;
 		text-align: center;
+	}
+	.emojiButton.isRandom span {
+		opacity: 50%;
+		filter: grayscale(100%);
 	}
 	.emojis {
 		display: grid;

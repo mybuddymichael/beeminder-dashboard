@@ -1,19 +1,51 @@
-export enum EmojiCategory {
-	exercise,
-	food,
-	life,
-	productivity,
-	reading,
-	faith
-}
+import { emoji as emojiStore } from '$lib/stores';
 
-export type EmojiObject = {
-	name: string;
-	emoji: string;
+enum EmojiCategory {
+	exercise = 'Exercise',
+	faith = 'Faith',
+	food = 'Food',
+	health = 'Health',
+	productivity = 'Productivity',
+	reading = 'Reading'
+}
+type EmojiName = string;
+type Emoji = string;
+
+type EmojiObject = {
+	name: EmojiName;
+	emoji: Emoji;
 	category: EmojiCategory;
 };
 
-export const emoji: EmojiObject[] = [
+export type EmojiGoal = {
+	emoji: Emoji;
+	goal: string;
+};
+
+export const setLocalStorageEmoji = (emoji: EmojiGoal[]) => {
+	try {
+		localStorage?.setItem('emoji', JSON.stringify(emoji));
+	} catch {
+		null;
+	}
+};
+
+export const getLocalStorageEmoji = () => {
+	try {
+		return JSON.parse(localStorage?.getItem('emoji') ?? '') as EmojiGoal[];
+	} catch {
+		return [];
+	}
+};
+
+export const updateEmoji = (emoji: Emoji, goal: string) => {
+	emojiStore.update((prev) => {
+		const cleaned = prev.filter((e) => e.goal !== goal);
+		return [...cleaned, { emoji, goal }];
+	});
+};
+
+export const emojis: EmojiObject[] = [
 	{ name: 'Flexed Biceps', emoji: '💪', category: EmojiCategory.exercise },
 	{ name: 'Person Lifting Weights', emoji: '🏋️', category: EmojiCategory.exercise },
 	{ name: 'Person Running', emoji: '🏃', category: EmojiCategory.exercise },
@@ -24,7 +56,7 @@ export const emoji: EmojiObject[] = [
 	{ name: 'Potable Water', emoji: '🚰', category: EmojiCategory.food },
 	{ name: 'Red Apple', emoji: '🍎', category: EmojiCategory.food },
 
-	{ name: 'Toothbrush', emoji: '🪥', category: EmojiCategory.life },
+	{ name: 'Toothbrush', emoji: '🪥', category: EmojiCategory.health },
 
 	{ name: 'Alarm Clock', emoji: '⏰', category: EmojiCategory.productivity },
 	{ name: 'Brain', emoji: '🧠', category: EmojiCategory.productivity },
