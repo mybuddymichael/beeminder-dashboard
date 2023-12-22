@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { spring, tweened } from 'svelte/motion';
-	import { quartIn } from 'svelte/easing';
 
 	import { signOut } from './auth';
-	import { preferences } from '$lib/stores';
+	import { popoverIsOpen, preferences } from '$lib/stores';
 	import { fetchJson, fetchGoals } from '$lib/api';
 	import { GroupByOption, groupGoals, mostPressingColor } from '$lib/goals';
 	import { latestVersion } from '$lib/versions';
@@ -12,20 +10,16 @@
 
 	import { setGroupByOption, toggleShowExtraData } from './preferences';
 
-	import PrefOption from '$lib/pref-option.svelte';
-	import CardGrid from '$lib/card-grid.svelte';
 	import BeeIcon from '$lib/bee-icon.svelte';
+	import CardGrid from '$lib/card-grid.svelte';
+	import Popover from '$lib/popover.svelte';
+	import PrefOption from '$lib/pref-option.svelte';
 	import SettingsIcon from '$lib/settings-icon.svelte';
 
 	const versionObj = latestVersion();
 	const VERSION = versionObj.version;
 	const DATE = versionObj.date;
 	const DESCRIPTION = versionObj.description;
-
-	const transformSpring = spring(0, { stiffness: 0.22, damping: 0.485, precision: 0.0001 });
-	const transformTween = tweened(0, { duration: 90, easing: quartIn });
-	let showPrefs = false;
-	$: animationValue = showPrefs ? $transformSpring : $transformTween;
 
 	$: keyColor = mostPressingColor(allGoals);
 
@@ -54,26 +48,9 @@
 		}
 	};
 
-	const togglePrefs = (e: MouseEvent) => {
-		if (showPrefs) {
-			showPrefs = false;
-			transformSpring.set(0);
-			transformTween.set(0);
-		} else {
-			showPrefs = true;
-			transformSpring.set(1);
-			transformTween.set(1);
-		}
-		e.stopPropagation();
-	};
-
-	const hidePrefs = (e: MouseEvent) => {
-		showPrefs = false;
-		transformSpring.set(0);
-		transformTween.set(0);
-		e.stopPropagation();
-	};
-	const stopPropagation = (e: Event) => e.stopPropagation();
+	function closePopovers(_: Event) {
+		popoverIsOpen.set(false);
+	}
 
 	onMount(function () {
 		try {
@@ -89,12 +66,12 @@
 		}, 1000 * 30); // 30 seconds.
 		// Refresh the data when the tab or window regains focus.
 		window.addEventListener('focus', updateGoals);
-		document.addEventListener('click', hidePrefs);
+		document.addEventListener('click', closePopovers);
 		// Clean up on component unmount.
 		return () => {
 			clearInterval(updateInterval);
 			window.removeEventListener('focus', updateGoals);
-			document.removeEventListener('click', hidePrefs);
+			document.removeEventListener('click', closePopovers);
 		};
 	});
 </script>
@@ -112,17 +89,11 @@
 				</div>
 			</div>
 			<div class="rightActions">
-				<div class="prefs">
-					<button on:click={togglePrefs}><SettingsIcon color="#979797" /> </button>
-					<div
-						class="prefsMenu"
-						class:showPrefs
-						style="transform: scale({animationValue}); opacity: {animationValue}"
-						role="menu"
-						tabindex="0"
-						on:click={stopPropagation}
-						on:keydown={stopPropagation}
-					>
+				<Popover>
+					<div class="prefsButton" slot="button">
+						<SettingsIcon color="#979797" />
+					</div>
+					<div slot="contents">
 						<PrefOption
 							handler={toggleGroupByDone}
 							checked={groupByDone}
@@ -156,7 +127,7 @@
 							label="Fine print"
 						/>
 					</div>
-				</div>
+				</Popover>
 				<button on:click={signOut}>Sign Out</button>
 			</div>
 		</div>
@@ -232,10 +203,6 @@
 		color: #8f8f8f;
 		padding: 0;
 	}
-	.prefs {
-		display: flex;
-		position: relative;
-	}
 	hr {
 		border: 0;
 		background-color: hsl(0, 0%, 94%);
@@ -251,28 +218,15 @@
 		text-transform: uppercase;
 		font-weight: 800;
 	}
-	.prefs button {
+	.prefsButton {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		padding: 0.5rem;
 		border-radius: 0.25rem;
 	}
-	.prefs button:hover {
+	.prefsButton:hover {
 		background-color: #f7f7f7;
-	}
-	.prefsMenu {
-		transform-origin: top right;
-		width: max-content;
-		position: absolute;
-		top: calc(100% + 0.75rem);
-		right: 0;
-		background-color: #fff;
-		border: 1px solid #efefef;
-		border-radius: 0.5rem;
-		box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.1);
-		padding: 1rem;
-		z-index: 100;
 	}
 	.divider {
 		width: calc(100% - 2.5rem);

@@ -11,7 +11,7 @@
 	// Spring open, tween closed.
 	$: animationValue = isOpen ? $transformSpring : $transformTween;
 
-	if (!$popoverIsOpen) {
+	$: if (!$popoverIsOpen) {
 		// Something triggered a close of everything.
 		close();
 	}
@@ -59,7 +59,6 @@
 
 <style>
 	.container {
-		display: flex;
 		position: relative;
 	}
 	button {
