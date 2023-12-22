@@ -88,7 +88,6 @@
 		top: calc(100% + 0.75rem);
 		right: 0;
 		background-color: #fff;
-		border: 1px solid #efefef;
 		border-radius: 0.5rem;
 		--shadow-color: rgb(0 0 0 / 0.06);
 		box-shadow: 0px 0px 0px 1px var(--shadow-color), 0px 1px 1px -0.5px var(--shadow-color),
