@@ -6,6 +6,7 @@
 
 	export let activeColor = 'rgba(0 0 0 / 0.04);';
 	export let borderRadius = '0.25rem';
+	export let padding = '1rem';
 
 	const transformSpring = spring(0, { stiffness: 0.22, damping: 0.485, precision: 0.0001 });
 	const transformTween = tweened(0, { duration: 90, easing: quartIn });
@@ -46,11 +47,11 @@
 	}
 </script>
 
-<div class="container">
+<div class="container" style={`--padding: ${padding};`}>
 	<button
 		on:click={toggleOpen}
 		class:isOpen
-		style={`--active-color: ${activeColor}; --border-radius: ${borderRadius}`}
+		style={`--active-color: ${activeColor}; --border-radius: ${borderRadius};;`}
 	>
 		<slot name="button" />
 	</button>
@@ -93,7 +94,7 @@
 		box-shadow: 0px 0px 0px 1px var(--shadow-color), 0px 1px 1px -0.5px var(--shadow-color),
 			0px 3px 3px -1.5px var(--shadow-color), 0px 6px 6px -3px var(--shadow-color),
 			0px 12px 12px -6px var(--shadow-color), 0px 24px 24px -12px var(--shadow-color);
-		padding: 1rem;
+		padding: var(--padding);
 		z-index: 100;
 	}
 </style>

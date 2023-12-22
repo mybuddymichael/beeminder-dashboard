@@ -1,10 +1,10 @@
 import { emoji as emojiStore } from '$lib/stores';
 
-enum EmojiCategory {
+export enum EmojiCategory {
 	exercise = 'Exercise',
-	faith = 'Faith',
 	food = 'Food',
 	health = 'Health',
+	// life = 'Life',
 	productivity = 'Productivity',
 	reading = 'Reading'
 }

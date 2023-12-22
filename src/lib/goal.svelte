@@ -8,7 +8,7 @@
 
 	import CheckmarkIcon from '$lib/checkmark-icon.svelte';
 	import DataPair from '$lib/data-pair.svelte';
-	import { emojis, updateEmoji } from '$lib/emoji';
+	import { EmojiCategory, emojis, updateEmoji } from '$lib/emoji';
 	import Popover from './popover.svelte';
 	import StatusChip from './status-chip.svelte';
 
@@ -36,8 +36,8 @@
 
 	const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
 	let isRandom = false;
-	$: existingEmoji = $emojiStore.find((e) => e.goal === slug);
 	let thisEmoji: string;
+	$: existingEmoji = $emojiStore.find((e) => e.goal === slug);
 	$: if (existingEmoji) {
 		thisEmoji = existingEmoji.emoji;
 		isRandom = false;
@@ -45,6 +45,9 @@
 		thisEmoji = randomEmoji.emoji;
 		isRandom = true;
 	}
+
+	const emojiCategories: string[] = Object.entries(EmojiCategory).map(([_, name]) => name);
+	console.log(emojiCategories);
 
 	let minTotal: number | null = null;
 	let timeLeft: number;
@@ -109,18 +112,21 @@
 
 <div class="container {color}" class:done={hasBeenDoneToday && !isBeemergency}>
 	<div class="emojiButtonContainer">
-		<Popover>
+		<Popover padding="1.5rem">
 			<div class="emojiButton" class:isRandom slot="button">
 				<span>{thisEmoji}</span>
 			</div>
 			<div class="emojis" slot="contents">
-				{#each emojis as e (e.name)}
-					<button
-						class="emoji"
-						on:click={(_) => {
-							updateEmoji(e.emoji, slug);
-						}}>{e.emoji}</button
-					>
+				{#each emojiCategories as ec (ec)}
+					<div class="emojiCategory">{ec}</div>
+					{#each emojis.filter((e) => e.category === ec) as e (e.name)}
+						<button
+							class="emoji"
+							on:click={(_) => {
+								updateEmoji(e.emoji, slug);
+							}}>{e.emoji}</button
+						>
+					{/each}
 				{/each}
 			</div>
 		</Popover>
@@ -274,6 +280,21 @@
 	.emojis {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+	.emojiCategory {
+		color: hsl(0, 0%, 70%);
+		grid-column: 1 / -1;
+		margin-top: 1rem;
+		margin-bottom: 0.25rem;
+		font-weight: 800;
+		font-size: 0.6875rem;
+		text-transform: uppercase;
+	}
+	.emojiCategory:first-of-type {
+		margin-top: 0;
+	}
+	.emojiCategory:last-of-type {
+		margin-bottom: 0;
 	}
 	.emoji {
 		display: flex;
