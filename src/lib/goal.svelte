@@ -45,6 +45,7 @@
 		thisEmoji = randomEmoji.emoji;
 		isRandom = true;
 	}
+	let emojiPopoverIsOpen = false;
 
 	const emojiCategories: string[] = Object.entries(EmojiCategory).map(([_, name]) => name);
 	console.log(emojiCategories);
@@ -110,9 +111,13 @@
 	});
 </script>
 
-<div class="container {color}" class:done={hasBeenDoneToday && !isBeemergency}>
+<div
+	class="container {color}"
+	class:done={hasBeenDoneToday && !isBeemergency}
+	class:emojiPopoverIsOpen
+>
 	<div class="emojiButtonContainer">
-		<Popover padding="1.5rem">
+		<Popover bind:isOpen={emojiPopoverIsOpen} padding="1.5rem">
 			<div class="emojiButton" class:isRandom slot="button">
 				<span>{thisEmoji}</span>
 			</div>
@@ -176,11 +181,15 @@
 		border-radius: 0.375rem;
 		padding: 1rem;
 		background-color: #fff;
-		transition: opacity 0.5s;
+		transition: opacity 0.175s;
 		min-width: 0;
 	}
 	.container.done {
 		opacity: 45%;
+	}
+	.container:hover,
+	.container.emojiPopoverIsOpen {
+		opacity: 100%;
 	}
 	.container.red {
 		background-color: hsla(0, 100%, 97%, 1);

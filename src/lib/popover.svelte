@@ -7,11 +7,11 @@
 	export let activeColor = 'rgba(0 0 0 / 0.04);';
 	export let borderRadius = '0.25rem';
 	export let padding = '1rem';
+	export let isOpen = false;
 
 	const transformSpring = spring(0, { stiffness: 0.22, damping: 0.485, precision: 0.0001 });
 	const transformTween = tweened(0, { duration: 90, easing: quartIn });
 
-	let isOpen = false;
 	// Spring open, tween closed.
 	$: animationValue = isOpen ? $transformSpring : $transformTween;
 
