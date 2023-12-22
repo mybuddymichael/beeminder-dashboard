@@ -21,6 +21,7 @@
 	const DATE = versionObj.date;
 	const DESCRIPTION = versionObj.description;
 
+	// Used to dynamically change the favicon.
 	$: keyColor = mostPressingColor(allGoals);
 
 	$: groupByDone = $preferences.groupBy === GroupByOption.done;

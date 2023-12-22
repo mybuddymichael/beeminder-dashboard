@@ -18,10 +18,12 @@
 
 	function open() {
 		popoverIsOpen.set(false); // Close everything else.
-		isOpen = true;
-		transformSpring.set(1);
-		transformTween.set(1);
-		popoverIsOpen.set(true);
+		setTimeout(() => {
+			isOpen = true;
+			transformSpring.set(1);
+			transformTween.set(1);
+			popoverIsOpen.set(true);
+		}, 10); // Need to wait a beat to process closing before opening this one.
 	}
 
 	function close() {

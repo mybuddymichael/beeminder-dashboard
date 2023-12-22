@@ -9,6 +9,7 @@
 	import CheckmarkIcon from '$lib/checkmark-icon.svelte';
 	import DataPair from '$lib/data-pair.svelte';
 	import StatusChip from './status-chip.svelte';
+	import Popover from './popover.svelte';
 
 	export let slug: string;
 	export let title: string | null;
@@ -102,10 +103,17 @@
 </script>
 
 <div class="container {color}" class:done={hasBeenDoneToday && !isBeemergency}>
-	<div class="emoji">
-		<div class="emojiLabel">
-			{emoji}
-		</div>
+	<div class="emojiButtonContainer">
+		<Popover>
+			<div class="emojiButton" slot="button">
+				<span>{emoji}</span>
+			</div>
+			<div class="emojis" slot="contents">
+				{#each emojis as emoji (emoji)}
+					<button class="emoji">{emoji}</button>
+				{/each}
+			</div>
+		</Popover>
 	</div>
 	<div class="topSection">
 		<div class="name-status">
@@ -234,22 +242,43 @@
 		color: inherit;
 		text-decoration: none;
 	}
-	.emoji {
+	.emojiButtonContainer {
 		position: absolute;
 		top: 0.5rem;
 		right: 0.5rem;
-		padding: 0.5rem;
-		cursor: pointer;
+	}
+	.emojiButton {
 		border-radius: 0.25rem;
-	}
-	.emoji:hover {
-		background-color: hsla(0, 0%, 100%, 0.85);
-	}
-	.emojiLabel {
+		padding: 0.5rem;
 		font-size: 1.5rem;
 		line-height: 1.5rem;
 		user-select: none;
 		text-align: center;
+	}
+	.emojiButton:hover {
+		background-color: hsla(0, 0%, 100%, 0.85);
+	}
+	.emojis {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		gap: 0.5rem;
+	}
+	.emoji {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		font-size: 1.5rem;
+		width: calc(1em + 1rem);
+		height: calc(1em + 1rem);
+		padding: 0.5rem;
+		border-radius: 0.5rem;
+		margin: 0;
+		border: 0;
+		background: none;
+	}
+	.emoji:hover {
+		background-color: #f5f5f5;
 	}
 	.checkmark {
 		display: none;
