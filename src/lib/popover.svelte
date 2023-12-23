@@ -9,6 +9,8 @@
 	export let padding = '1rem';
 	export let isOpen = false;
 
+	let contents: HTMLElement;
+
 	const transformSpring = spring(0, { stiffness: 0.22, damping: 0.485, precision: 0.0001 });
 	const transformTween = tweened(0, { duration: 90, easing: quartIn });
 
@@ -20,9 +22,21 @@
 		close();
 	}
 
+	function adjustPosition() {
+		setTimeout(() => {
+			const contentsRect = contents.getBoundingClientRect();
+			console.log('right', parseFloat(getComputedStyle(contents).right));
+
+			if (contentsRect.x < 16) {
+				contents.style.right = `-${16 - contentsRect.x}px`;
+			}
+		}, 200);
+	}
+
 	function open() {
 		popoverIsOpen.set(false); // Close everything else.
 		setTimeout(() => {
+			adjustPosition();
 			isOpen = true;
 			transformSpring.set(1);
 			transformTween.set(1);
@@ -56,6 +70,7 @@
 		<slot name="button" />
 	</button>
 	<div
+		bind:this={contents}
 		class="contents"
 		style="transform: scale({animationValue}); opacity: {animationValue}"
 		role="menu"
