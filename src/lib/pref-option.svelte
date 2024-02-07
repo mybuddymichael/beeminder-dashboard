@@ -1,10 +1,19 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
+
 	export let handler: (e: Event) => void;
 	export let checked: boolean;
 	export let label: string;
 </script>
 
-<div class="pref" role="button" tabindex="0" on:click={handler} on:keypress={handler}>
+<div
+	class="pref"
+	role="button"
+	tabindex="0"
+	transition:fade={{ duration: 100 }}
+	on:click={handler}
+	on:keypress={handler}
+>
 	<input type="checkbox" bind:checked />
 	<div class="label">{label}</div>
 </div>

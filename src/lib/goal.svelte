@@ -12,6 +12,7 @@
 	import { updateEmoji } from '$lib/emoji';
 	import Popover from './popover.svelte';
 	import StatusChip from './status-chip.svelte';
+	import { fade } from 'svelte/transition';
 
 	export let slug: string;
 	export let title: string | null;
@@ -27,6 +28,9 @@
 	export let runits: string;
 	export let gunits: string;
 	export let fineprint: string | null;
+	export let compact = false;
+
+	$: isDaily = fineprint?.includes('#daily');
 
 	$: isBeemergency = safebuf === 0;
 	$: lastdayDate = new Date(lastday * 1000);
@@ -34,6 +38,7 @@
 	$: color = colorForBuffer(safebuf);
 	$: noMaxBuffer = maxBuffer === null;
 	$: maxBufferString = !noMaxBuffer ? `${maxBuffer}d` : 'None';
+	$: canDisplayAsDone = hasBeenDoneToday && !isBeemergency && !emojiPopoverIsOpen && isDaily;
 
 	let emojiInput = '';
 	const emojiRegexPattern = emojiRegex();
@@ -125,64 +130,115 @@
 	});
 </script>
 
-<div
-	class="container {color}"
-	class:done={hasBeenDoneToday && !isBeemergency}
-	class:emojiPopoverIsOpen
->
-	{#if $betaFeatures.useEmoji}
-		<div class="emojiButtonContainer">
-			<Popover bind:isOpen={emojiPopoverIsOpen} padding="1.5rem">
-				<div class="emojiButton" class:isRandom slot="button">
-					<span>{thisEmoji}</span>
-				</div>
-				<div class="popoverContents" slot="contents">
-					<input
-						bind:value={emojiInput}
-						class="emojiInput"
-						type="text"
-						placeholder={thisEmoji ?? randomEmoji}
-					/>
-				</div>
-			</Popover>
-		</div>
-	{/if}
-	<div class="topSection">
-		<div class="name-status">
-			<div class="name">
-				<span><a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a></span>
-				<div class="checkmark"><CheckmarkIcon {color} /></div>
+{#if compact}
+	<div
+		on:click|stopPropagation={(e) =>
+			(window.location.href = `https://www.beeminder.com/${$username}/${slug}`)}
+		on:keypress|stopPropagation={(e) =>
+			(window.location.href = `https://www.beeminder.com/${$username}/${slug}`)}
+		role="button"
+		tabindex="0"
+		class="mh-shadow-3 mh-highlight hover:mh-shadow-4 tw-relative tw-flex tw-cursor-pointer tw-select-none tw-flex-col tw-items-start tw-rounded-xl tw-bg-[#fbfbfb] {!$betaFeatures.useEmoji
+			? 'tw-p-3'
+			: 'tw-pb-3 tw-pe-2 tw-ps-3 tw-pt-1'} tw-transition tw-duration-300 hover:tw-opacity-100"
+		class:tw-opacity-40={canDisplayAsDone}
+	>
+		<div class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-between">
+			<div
+				class="tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-px-1 tw-py-0 tw-font-[Nunito] tw-text-sm tw-font-bold tw-text-gray-700"
+			>
+				{slug}
 			</div>
-			<StatusChip {color} {baremin} {minTotal} {timeLeft} {timeUnit} {pledge} />
+			{#if $betaFeatures.useEmoji}
+				<Popover bind:isOpen={emojiPopoverIsOpen} padding="1rem">
+					<div
+						class="tw-flex tw-select-none tw-items-center tw-justify-center tw-p-2 tw-text-center tw-text-lg tw-leading-5"
+						class:isRandom
+						slot="button"
+					>
+						<span>{thisEmoji}</span>
+					</div>
+					<div class="popoverContents" slot="contents">
+						<input
+							bind:value={emojiInput}
+							class="emojiInput"
+							type="text"
+							placeholder={thisEmoji ?? randomEmoji}
+						/>
+					</div>
+				</Popover>
+			{/if}
 		</div>
-		{#if $preferences.showExtraData.description}
-			<div class="description" class:noDescription>{title}</div>
-		{/if}
+		<StatusChip
+			{color}
+			{baremin}
+			{minTotal}
+			{timeLeft}
+			{timeUnit}
+			{pledge}
+			checkMark={canDisplayAsDone}
+		/>
 	</div>
-	<div class="additionalInfo">
-		{#if $preferences.showExtraData.lastCompleted}
-			<DataPair
-				{color}
-				key="Last completed"
-				value={lastCompletedDateString}
-				onClick={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
-			/>
+{:else}
+	<div
+		class="container {color}"
+		class:done={hasBeenDoneToday && !isBeemergency}
+		class:emojiPopoverIsOpen
+	>
+		{#if $betaFeatures.useEmoji}
+			<div class="emojiButtonContainer">
+				<Popover bind:isOpen={emojiPopoverIsOpen}>
+					<div class="emojiButton" class:isRandom slot="button">
+						<span>{thisEmoji}</span>
+					</div>
+					<div class="popoverContents" slot="contents">
+						<input
+							bind:value={emojiInput}
+							class="emojiInput"
+							type="text"
+							placeholder={thisEmoji ?? randomEmoji}
+						/>
+					</div>
+				</Popover>
+			</div>
 		{/if}
-		{#if $preferences.showExtraData.rate && rate}
-			<DataPair
-				{color}
-				key="Rate"
-				value="{rate % 1 !== 0 ? rate.toFixed(1) : rate} {gunits} per {convertRUnit(runits)}"
-			/>
-		{/if}
-		{#if $preferences.showExtraData.maxBuffer && maxBuffer}
-			<DataPair {color} key="Max buffer" value={maxBufferString} />
-		{/if}
-		{#if $preferences.showExtraData.finePrint && fineprint}
-			<DataPair {color} key="Fine print" value={fineprint} />
-		{/if}
+		<div class="topSection">
+			<div class="name-status">
+				<div class="name">
+					<span><a href="https://www.beeminder.com/{$username}/{slug}">{slug}</a></span>
+					<div class="checkmark"><CheckmarkIcon {color} /></div>
+				</div>
+				<StatusChip {color} {baremin} {minTotal} {timeLeft} {timeUnit} {pledge} />
+			</div>
+			{#if $preferences.showExtraData.description}
+				<div class="description" class:noDescription>{title}</div>
+			{/if}
+		</div>
+		<div class="additionalInfo">
+			{#if $preferences.showExtraData.lastCompleted}
+				<DataPair
+					{color}
+					key="Last completed"
+					value={lastCompletedDateString}
+					onClick={() => toggleLastCompletedFormat($preferences.lastCompletedFormat)}
+				/>
+			{/if}
+			{#if $preferences.showExtraData.rate && rate}
+				<DataPair
+					{color}
+					key="Rate"
+					value="{rate % 1 !== 0 ? rate.toFixed(1) : rate} {gunits} per {convertRUnit(runits)}"
+				/>
+			{/if}
+			{#if $preferences.showExtraData.maxBuffer && maxBuffer}
+				<DataPair {color} key="Max buffer" value={maxBufferString} />
+			{/if}
+			{#if $preferences.showExtraData.finePrint && fineprint}
+				<DataPair {color} key="Fine print" value={fineprint} />
+			{/if}
+		</div>
 	</div>
-</div>
+{/if}
 
 <style>
 	.container {
@@ -228,7 +284,7 @@
 	.name-status {
 		display: flex;
 		flex-direction: column;
-		align-items: start;
+		align-items: flex-start;
 		gap: 0.375rem;
 	}
 	.nameContainer {
@@ -293,7 +349,7 @@
 		user-select: none;
 		text-align: center;
 	}
-	.emojiButton.isRandom span {
+	.isRandom span {
 		opacity: 50%;
 		filter: grayscale(100%);
 	}

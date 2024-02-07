@@ -8,8 +8,12 @@ import { getLocalStorageEmoji, setLocalStorageEmoji } from '$lib/emoji';
 
 type BetaFeatures = {
 	useEmoji: boolean;
+	useTimeline: boolean;
 };
-export const betaFeatures = writable({ useEmoji: false } as BetaFeatures);
+export const betaFeatures = writable({
+	useEmoji: false,
+	useTimeline: false
+} as BetaFeatures);
 export const emoji = writable(getLocalStorageEmoji());
 emoji.subscribe((value) => {
 	setLocalStorageEmoji(value);

@@ -7,16 +7,21 @@
 	export let timeLeft: number;
 	export let timeUnit: string;
 	export let pledge: number;
+	export let checkMark: boolean = false;
 </script>
 
 <div class="status {color}">
-	{baremin}
-	{#if minTotal}
-		<span class="mintotal">({minTotal})</span>
-	{/if}
-	in {timeLeft}{timeUnit}
-	{#if timeUnit === 'h'}
-		<span class="dot">•</span> ${pledge}
+	{#if checkMark}
+		✔︎
+	{:else}
+		{baremin}
+		{#if minTotal}
+			<span class="mintotal">({minTotal})</span>
+		{/if}
+		in {timeLeft}{timeUnit}
+		{#if timeUnit === 'h'}
+			<span class="dot">•</span> ${pledge}
+		{/if}
 	{/if}
 </div>
 

@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 31,
+		date: '2024-03-13',
+		description: 'Add emoji and timeline view as URL parameters.'
+	},
+	{
 		version: 30,
 		date: '2023-12-14',
 		description: 'Fixed the settings icon looking awful in Safari.'

@@ -2,11 +2,12 @@
 	import type { GoalClean } from '$lib/goals';
 	import { flip } from 'svelte/animate';
 	import GoalCard from '$lib/goal.svelte';
+	import { fade } from 'svelte/transition';
 
 	export let goals: GoalClean[];
 </script>
 
-<div class="cards">
+<div class="cards" transition:fade={{ duration: 100 }}>
 	{#each goals as goal (goal.id)}
 		<div animate:flip={{ duration: 300 }}>
 			<GoalCard {...goal} />

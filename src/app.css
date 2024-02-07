@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+	.mh-shadow-1 {
+		--shadow-color: hsla(0, 0%, 0%, 0.06);
+		--highlight: inset 0 -1.8px 2.5px 0 hsla(0, 0%, 0%, 0.03),
+			inset 0 2.5px 2.5px 0 hsla(0, 0%, 100%, 0.54);
+		box-shadow:
+			0 0 0 1px var(--shadow-color),
+			var(--highlight);
+	}
+	.mh-shadow-2 {
+		--shadow-color: hsla(0, 0%, 0%, 0.06);
+		--highlight: inset 0 -1.8px 2.5px 0 hsla(0, 0%, 0%, 0.03),
+			inset 0 2.5px 2.5px 0 hsla(0, 0%, 100%, 0.54);
+		box-shadow:
+			0 0 0 1px var(--shadow-color),
+			0 1px 1px -0.5px var(--shadow-color),
+			var(--highlight);
+	}
+	.mh-shadow-3 {
+		--shadow-color: hsla(0, 0%, 0%, 0.06);
+		--highlight: inset 0 -1.8px 2.5px 0 hsla(0, 0%, 0%, 0.03),
+			inset 0 2.5px 2.5px 0 hsla(0, 0%, 100%, 0.54);
+		box-shadow:
+			0 0 0 1px var(--shadow-color),
+			0 1px 1px -0.5px var(--shadow-color),
+			0 3px 3px -1.5px var(--shadow-color),
+			var(--highlight);
+	}
+	.mh-shadow-4 {
+		--shadow-color: hsla(0, 0%, 0%, 0.06);
+		--highlight: inset 0 -1.8px 2.5px 0 hsla(0, 0%, 0%, 0.03),
+			inset 0 2.5px 2.5px 0 hsla(0, 0%, 100%, 0.54);
+		box-shadow:
+			0 0 0 1px var(--shadow-color),
+			0 1px 1px -0.5px var(--shadow-color),
+			0 3px 3px -1.5px var(--shadow-color),
+			0 6px 6px -3px var(--shadow-color),
+			var(--highlight);
+	}
+}

@@ -40,7 +40,6 @@
 	}
 
 	function toggleOpen(e: Event) {
-		e.stopPropagation();
 		if (isOpen) {
 			close();
 		} else {
@@ -51,7 +50,7 @@
 
 <div class="container" style={`--padding: ${padding};`}>
 	<button
-		on:click={toggleOpen}
+		on:click|stopPropagation={toggleOpen}
 		class:isOpen
 		style={`--active-color: ${activeColor}; --border-radius: ${borderRadius};;`}
 	>
@@ -62,8 +61,8 @@
 		style="transform: scale({animationValue}); opacity: {animationValue};"
 		role="menu"
 		tabindex="0"
-		on:click={(e) => e.stopPropagation()}
-		on:keydown={(e) => e.stopPropagation()}
+		on:click|stopPropagation
+		on:keydown|stopPropagation
 	>
 		<slot name="contents" />
 	</div>
@@ -93,9 +92,13 @@
 		background: linear-gradient(to bottom, #fff, #fdfdfd);
 		border-radius: 0.5rem;
 		--shadow-color: rgb(0 0 0 / 0.06);
-		box-shadow: 0px 0px 0px 1px var(--shadow-color), 0px 1px 1px -0.5px var(--shadow-color),
-			0px 3px 3px -1.5px var(--shadow-color), 0px 6px 6px -3px var(--shadow-color),
-			0px 12px 12px -6px var(--shadow-color), 0px 24px 24px -12px var(--shadow-color);
+		box-shadow:
+			0px 0px 0px 1px var(--shadow-color),
+			0px 1px 1px -0.5px var(--shadow-color),
+			0px 3px 3px -1.5px var(--shadow-color),
+			0px 6px 6px -3px var(--shadow-color),
+			0px 12px 12px -6px var(--shadow-color),
+			0px 24px 24px -12px var(--shadow-color);
 		padding: var(--padding);
 		z-index: 100;
 	}

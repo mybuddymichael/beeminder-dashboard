@@ -2,10 +2,15 @@ import { preferences } from '$lib/stores';
 import { GroupByOption } from '$lib/goals';
 
 type LastCompletedFormat = 'relative' | 'distance';
+export enum Layout {
+	timeline,
+	grid
+}
 
 type ExtraData = 'maxBuffer' | 'description' | 'lastCompleted' | 'rate' | 'finePrint';
 
 type Preferences = {
+	layout: Layout;
 	showExtraData: {
 		maxBuffer: boolean;
 		description: boolean;
@@ -18,6 +23,7 @@ type Preferences = {
 };
 
 export const defaultPreferences: Preferences = {
+	layout: Layout.grid,
 	showExtraData: {
 		maxBuffer: true,
 		description: true,
@@ -62,5 +68,17 @@ export const toggleShowExtraData = (category: ExtraData) => {
 	preferences.update((prev) => {
 		const showExtraData = { ...prev.showExtraData, [category]: !prev.showExtraData[category] };
 		return { ...prev, showExtraData };
+	});
+};
+
+export const toggleLayout = () => {
+	preferences.update((prev) => {
+		let newPrefs;
+		if (prev.layout === Layout.grid) {
+			newPrefs = { ...prev, layout: Layout.timeline };
+		} else {
+			newPrefs = { ...prev, layout: Layout.grid };
+		}
+		return newPrefs;
 	});
 };

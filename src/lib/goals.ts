@@ -100,9 +100,9 @@ export const colorForBuffer = (days: number): GoalColor => {
 		return GoalColor.yellow;
 	} else if (days >= 3 && days < 7) {
 		return GoalColor.green;
-	} else if (days >= 7 && days < 30) {
+	} else if (days >= 7 && days < 14) {
 		return GoalColor.blue;
-	} else if (days >= 30) {
+	} else if (days >= 14) {
 		return GoalColor.purple;
 	}
 	return GoalColor.gray;
