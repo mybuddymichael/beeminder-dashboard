@@ -9,8 +9,6 @@
 	export let padding = '1rem';
 	export let isOpen = false;
 
-	let shadowContents: HTMLElement;
-
 	const transformSpring = spring(0, { stiffness: 0.22, damping: 0.485, precision: 0.0001 });
 	const transformTween = tweened(0, { duration: 90, easing: quartIn });
 
@@ -47,18 +45,20 @@
 			open();
 		}
 	}
+
+	const hoverActiveButtonBg = 'bg-[rgba(0_0_0_/_0.04);]';
+	$: buttonBg = isOpen ? hoverActiveButtonBg : 'bg-transparent';
 </script>
 
-<div class="container" style={`--padding: ${padding};`}>
+<div class="relative" style={`--padding: ${padding};`}>
 	<button
+		class="m-0 {buttonBg} rounded border-0 p-0 hover:{hoverActiveButtonBg}"
 		on:click={toggleOpen}
-		class:isOpen
-		style={`--active-color: ${activeColor}; --border-radius: ${borderRadius};;`}
 	>
 		<slot name="button" />
 	</button>
 	<div
-		class="contents"
+		class="absolute right-0 top-[calc(100%+0.75rem)] z-10 w-max origin-top-right rounded-lg bg-gradient-to-b from-white to-[#fdfdfd] p-4 shadow-md"
 		style="transform: scale({animationValue}); opacity: {animationValue};"
 		role="menu"
 		tabindex="0"
@@ -70,20 +70,6 @@
 </div>
 
 <style>
-	.container {
-		position: relative; /* .contents will position against this */
-	}
-	button {
-		margin: 0;
-		padding: 0;
-		border: 0;
-		background: none;
-		border-radius: var(--border-radius);
-	}
-	button.isOpen,
-	button:hover {
-		background-color: var(--active-color);
-	}
 	.contents {
 		--y-offset: calc(100% + 0.75rem);
 		transform-origin: top right;

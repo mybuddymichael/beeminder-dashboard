@@ -82,7 +82,7 @@
 </svelte:head>
 
 <div class="container">
-	<main>
+	<main class="w-screen">
 		<div class="titlebar">
 			<div class="logomark">
 				<div class="bee">
@@ -132,6 +132,7 @@
 				<button on:click={signOut}>Sign Out</button>
 			</div>
 		</div>
+		<!-- <div class="flex h-screen w-screen flex-row bg-slate-300">Stuff here</div> -->
 		{#if 'goals' in goalsGrouped}
 			<CardGrid goals={goalsGrouped.goals} />
 		{:else if goalsGrouped.done?.length === 0}
@@ -154,9 +155,6 @@
 		width: 100vw;
 		min-height: 100vh;
 		background-color: #fff;
-	}
-	main {
-		flex: 1 0 auto;
 	}
 	.version {
 		display: flex;

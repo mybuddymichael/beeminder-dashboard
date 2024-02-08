@@ -1,6 +1,7 @@
 <script>
 	import { dev } from '$app/environment';
 	import { inject } from '@vercel/analytics';
+	import '../app.css';
 
 	inject({ mode: dev ? 'development' : 'production' });
 </script>
@@ -33,8 +34,19 @@
 			--font-weight-link: 700;
 			--font-weight-title: 850;
 
-			font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-				Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+			font-family:
+				Inter,
+				system-ui,
+				-apple-system,
+				BlinkMacSystemFont,
+				'Segoe UI',
+				Roboto,
+				Oxygen,
+				Ubuntu,
+				Cantarell,
+				'Open Sans',
+				'Helvetica Neue',
+				sans-serif;
 			-webkit-font-smoothing: antialiased;
 			-moz-osx-font-smoothing: grayscale;
 			text-rendering: optimizeLegibility;
