@@ -293,7 +293,7 @@
 		user-select: none;
 		text-align: center;
 	}
-	.emojiButton.isRandom span {
+	.isRandom span {
 		opacity: 50%;
 		filter: grayscale(100%);
 	}
