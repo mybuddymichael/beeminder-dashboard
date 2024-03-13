@@ -12,9 +12,14 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 32,
+		date: '2024-03-13',
+		description: 'Fixed popovers being too close to their buttons.'
+	},
+	{
 		version: 31,
 		date: '2024-03-13',
-		description: 'Add emoji and timeline view as URL parameters.'
+		description: 'Added emoji and a timeline view as URL parameters.'
 	},
 	{
 		version: 30,

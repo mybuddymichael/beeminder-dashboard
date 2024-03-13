@@ -84,10 +84,11 @@
 		background-color: var(--active-color);
 	}
 	.contents {
-		--y-offset: calc(100% + 0.75rem);
+		--y-offset: calc(100% + 0.5rem);
 		transform-origin: top right;
 		width: max-content;
 		position: absolute;
+		top: var(--y-offset);
 		right: 0;
 		background: linear-gradient(to bottom, #fff, #fdfdfd);
 		border-radius: 0.5rem;
