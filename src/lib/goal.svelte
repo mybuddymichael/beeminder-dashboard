@@ -145,7 +145,7 @@
 	>
 		<div class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-between">
 			<div
-				class="tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-px-1 tw-py-0 tw-font-[Nunito] tw-text-sm tw-font-bold tw-text-gray-700"
+				class="tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-py-0 tw-pr-2 tw-font-[Nunito] tw-text-sm tw-font-bold tw-text-gray-700"
 			>
 				{slug}
 			</div>

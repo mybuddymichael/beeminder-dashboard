@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 33,
+		date: '2024-03-13',
+		description: 'Fixed some irregular padding in timeline view.'
+	},
+	{
 		version: 32,
 		date: '2024-03-13',
 		description: 'Fixed popovers being too close to their buttons.'
