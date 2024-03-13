@@ -138,9 +138,8 @@
 			(window.location.href = `https://www.beeminder.com/${$username}/${slug}`)}
 		role="button"
 		tabindex="0"
-		class="mh-shadow-3 mh-highlight hover:mh-shadow-4 tw-relative tw-flex tw-cursor-pointer tw-select-none tw-flex-col tw-items-start tw-rounded-xl tw-bg-[#fbfbfb] {!$betaFeatures.useEmoji
-			? 'tw-p-3'
-			: 'tw-pb-3 tw-pe-2 tw-ps-3 tw-pt-1'} tw-transition tw-duration-300 hover:tw-opacity-100"
+		class="mh-shadow-3 mh-highlight hover:mh-shadow-4 tw-relative tw-flex tw-cursor-pointer tw-select-none tw-flex-col tw-items-start tw-rounded-xl tw-bg-[#fbfbfb] tw-pb-[14px] tw-pl-[14px] tw-pr-2 tw-pt-1 {!$betaFeatures.useEmoji &&
+			'tw-gap-2 tw-pt-3'} tw-transition tw-duration-300 hover:tw-opacity-100"
 		class:tw-opacity-40={canDisplayAsDone}
 	>
 		<div class="tw-flex tw-w-full tw-flex-row tw-items-center tw-justify-between">

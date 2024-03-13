@@ -12,6 +12,11 @@ export function latestVersion() {
 
 const versions = [
 	{
+		version: 34,
+		date: '2024-03-13',
+		description: 'Adjusted the padding of timeline goal cards.'
+	},
+	{
 		version: 33,
 		date: '2024-03-13',
 		description: 'Fixed some irregular padding in timeline view.'
